@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "264268768447",
+    "project_id": "nirva-project",
+    "storage_bucket": "nirva-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264268768447:android:99e2e65d90290c27f1920a",
+        "android_client_info": {
+          "package_name": "com.example.nirva"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCE9k00yuJlruPoFxsu0WpzQUu7_GpVTMI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

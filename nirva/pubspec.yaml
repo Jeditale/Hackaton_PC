@@ -12,6 +12,18 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   flutter_spinkit: ^5.2.1
+  flutter_local_notifications: ^17.1.1
+  timezone: ^0.9.4
+  intl: ^0.18.0
+  permission_handler: ^11.3.1
+  app_settings: ^5.1.1
+  flutter_ringtone_player: ^4.0.0+3
+  firebase_core: ^3.8.0
+  pie_chart: ^5.4.0
+  fl_chart: ^0.69.0
+  cloud_firestore: ^5.5.0
+  video_player: ^2.9.2
+  audioplayers: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +35,6 @@ flutter:
 
   assets:
     - assets/image/
+    - assets/notification/
+    - assets/video/
+    - assets/sound/
