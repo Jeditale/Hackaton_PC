@@ -5,6 +5,7 @@ import 'package:nirva/Pages/mainmenu_page.dart';
 import 'package:nirva/Pages/shop.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:nirva/hotbar/hotbar_navigation.dart'; // Ensure this is the correct import for your project
+import 'package:nirva/Pages/Progress/test_bar.dart';
 
 void main() {
   runApp(ProgressPageApp());
@@ -66,66 +67,85 @@ class _ProgressPageState extends State<ProgressPage> {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Profile picture
-                
-                
-                // Progress card with Pie Chart
-                Card(
-                  color: Colors.blue[100]?.withOpacity(0.8), // Slight transparency for background visibility
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'This month progress',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Profile picture
+                  
+                  
+                  // Progress card with Pie Chart
+                  Card(
+                    color: Colors.blue[100]?.withOpacity(0.8), // Slight transparency for background visibility
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'This month progress',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          height: 300,
-                          child: PiechartSample(), // Display the Pie Chart here
-                        ),
-                      ],
+                          SizedBox(height: 10),
+                          Container(
+                            height: 300,
+                            child: PiechartSample(), // Display the Pie Chart here
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                
-                SizedBox(height: 20),
-                Text(
-                  'Progress',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                  
+                  SizedBox(height: 20),
+                  Text(
+                    'Progress',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-
-                // Breathing Exercise card
-                ProgressCard(
-                  icon: Icons.self_improvement, // Replace with a breathing icon if available
-                  title: 'Breathing Exercise',
-                ),
-
-                // Meditate card
-                ProgressCard(
-                  icon: Icons.spa, // Replace with a meditation icon if available
-                  title: 'Meditation',
-                ),
-              ],
+                  SizedBox(height: 10),
+            
+                  // Breathing Exercise card
+                  Card(
+                    color: Colors.blue[100]?.withOpacity(0.8), // Slight transparency for background visibility
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'This month progress',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            height: 300,
+                            child: MyBarTotal(), // Display the Pie Chart here
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -233,3 +253,4 @@ class PiechartSample extends StatelessWidget {
     );
   }
 }
+

@@ -1,27 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-void main() {
-  runApp(TestBar());
-}
 
-class TestBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyWidget(),
-    );
-  }
-}
-
-class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
+class MyBarTotal extends StatefulWidget {
+  const MyBarTotal({super.key});
 
   @override
-  State<MyWidget> createState() => _MyWidgetState();
+  State<MyBarTotal> createState() => _MyBarState();
 }
 
-class _MyWidgetState extends State<MyWidget> {
+class _MyBarState extends State<MyBarTotal> {
   List<double> weeklySummary = [
     10,
     50,
