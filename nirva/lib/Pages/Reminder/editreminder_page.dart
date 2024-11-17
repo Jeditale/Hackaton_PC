@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart'; // for formatting time
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class EditReminderPage extends StatefulWidget {
   final Map<String, dynamic> reminder;
@@ -10,22 +14,25 @@ class EditReminderPage extends StatefulWidget {
 }
 
 class _EditReminderPageState extends State<EditReminderPage> {
-  late TextEditingController _nameController;
-  late TextEditingController _descriptionController;
-  late TimeOfDay _selectedTime;
-  late List<String> _selectedDays;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  TimeOfDay _selectedTime = TimeOfDay.now();
+  DateTime _selectedDate = DateTime.now();
+  List<String> _selectedDays = [];
   String _notificationSound = 'default';
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.reminder['name']);
-    _descriptionController = TextEditingController(text: widget.reminder['description']);
-
-    final reminderTime = widget.reminder['time'];
-    _selectedTime = reminderTime != null ? TimeOfDay.fromDateTime(reminderTime) : TimeOfDay.now();
-
-    _selectedDays = widget.reminder['repeat'] != null ? widget.reminder['repeat'].split(', ') : [];
+    tz.initializeTimeZones();
+    _nameController.text = widget.reminder['name'];
+    _descriptionController.text = widget.reminder['description'];
+    _selectedTime = TimeOfDay.fromDateTime(widget.reminder['time']);
+    _selectedDate = widget.reminder['time'];
+    _selectedDays = widget.reminder['repeat'].split(', ').toList();
     _notificationSound = widget.reminder['sound'] ?? 'default';
   }
 
@@ -41,6 +48,20 @@ class _EditReminderPageState extends State<EditReminderPage> {
     }
   }
 
+  void _selectDate() async {
+    final DateTime? newDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (newDate != null) {
+      setState(() {
+        _selectedDate = newDate;
+      });
+    }
+  }
+
   void _toggleDay(String day) {
     setState(() {
       if (_selectedDays.contains(day)) {
@@ -51,27 +72,100 @@ class _EditReminderPageState extends State<EditReminderPage> {
     });
   }
 
-  void _saveReminder() {
-    final updatedReminder = {
-      'id': widget.reminder['id'],
+  void _selectSound(String sound) {
+    setState(() {
+      _notificationSound = sound;
+    });
+  }
+
+  void _saveReminder() async {
+    if (_nameController.text.isEmpty) {
+      _showAlertDialog('Error', 'Please enter a name for the reminder');
+      return;
+    }
+    if (_selectedDays.isEmpty) {
+      _showAlertDialog('Error', 'Please select at least one day');
+      return;
+    }
+
+    DateTime reminderDateTime = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+      _selectedTime.hour,
+      _selectedTime.minute,
+    );
+
+    if (reminderDateTime.isBefore(DateTime.now())) {
+      reminderDateTime = reminderDateTime.add(Duration(days: 1));
+    }
+
+    final reminderData = {
+      'id': widget.reminder['id'], // Include the existing reminder ID
       'name': _nameController.text,
-      'time': DateTime(
-        widget.reminder['time']?.year ?? DateTime.now().year,
-        widget.reminder['time']?.month ?? DateTime.now().month,
-        widget.reminder['time']?.day ?? DateTime.now().day,
-        _selectedTime.hour,
-        _selectedTime.minute,
-      ),
+      'time': reminderDateTime,
       'repeat': _selectedDays.join(', '),
       'sound': _notificationSound,
       'description': _descriptionController.text,
     };
 
-    Navigator.pop(context, updatedReminder);
+    await _scheduleNotification(reminderDateTime);
+
+    Navigator.pop(context, reminderData); // Return updated reminder data
   }
 
   void _deleteReminder() {
     Navigator.pop(context, 'delete');
+  }
+
+  void _showAlertDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _scheduleNotification(DateTime reminderDateTime) async {
+    var androidDetails = AndroidNotificationDetails(
+      'reminder_channel_id',
+      'Reminders',
+      channelDescription: 'This channel is for reminder notifications',
+      importance: Importance.high,
+      priority: Priority.high,
+      sound: _notificationSound == 'default'
+          ? null
+          : RawResourceAndroidNotificationSound(
+              _notificationSound),
+    );
+
+    var platformDetails = NotificationDetails(android: androidDetails);
+
+    tz.TZDateTime scheduledDate = tz.TZDateTime.from(reminderDateTime, tz.local);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      'Reminder: ${_nameController.text}',
+      _descriptionController.text,
+      scheduledDate,
+      platformDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.wallClockTime,
+      payload: 'reminder_payload',
+    );
   }
 
   @override
@@ -79,131 +173,113 @@ class _EditReminderPageState extends State<EditReminderPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Reminder'),
-        backgroundColor: Colors.white, // White AppBar
+        backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      resizeToAvoidBottomInset: true, // Ensure layout is adjusted for keyboard
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/image/Bg.png'), // Correct image path
-            fit: BoxFit.cover, // Ensures the image covers the screen
-            alignment: Alignment.topCenter, // Aligns the top part of the image
+            image: AssetImage('assets/image/Bg.png'),
+            fit: BoxFit.cover,
           ),
         ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Reminder Name',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: _descriptionController,
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Row(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
                   children: [
-                    Text('Select Time: '),
-                    Text(_selectedTime.format(context)),
-                    IconButton(
-                      icon: Icon(Icons.access_time),
-                      onPressed: _selectTime,
+                    TextField(
+                      controller: _nameController,
+                      decoration: InputDecoration(labelText: 'Reminder Name'),
                     ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Text('Repeat On:'),
-                Wrap(
-                  spacing: 8,
-                  children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                      .map((day) {
-                    return ChoiceChip(
-                      label: Text(day),
-                      selected: _selectedDays.contains(day),
-                      onSelected: (_) => _toggleDay(day),
-                    );
-                  }).toList(),
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Text('Select Sound: '),
-                    DropdownButton<String>(
-                      value: _notificationSound,
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            _notificationSound = newValue;
-                          });
-                        }
-                      },
-                      items: ['default', 'sound1', 'sound2']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: _descriptionController,
+                      decoration: InputDecoration(labelText: 'Description'),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text('Select Time: '),
+                        Text(_selectedTime.format(context)),
+                        IconButton(
+                          icon: Icon(Icons.access_time),
+                          onPressed: _selectTime,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text('Start Date: '),
+                        Text(DateFormat.yMd().format(_selectedDate)),
+                        IconButton(
+                          icon: Icon(Icons.calendar_today),
+                          onPressed: _selectDate,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Text('Repeat On:'),
+                    Wrap(
+                      spacing: 8,
+                      children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                          .map((day) {
+                        return ChoiceChip(
+                          label: Text(day),
+                          selected: _selectedDays.contains(day),
+                          onSelected: (_) => _toggleDay(day),
                         );
                       }).toList(),
                     ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text('Select Sound: '),
+                        DropdownButton<String>(
+                          value: _notificationSound,
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              _selectSound(newValue);
+                            }
+                          },
+                          items: ['default', 'Frog', 'Wahh']
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-                SizedBox(height: 20),
-                // Save Reminder Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 73, // Custom height for the button
-                  child: ElevatedButton(
-                    onPressed: _saveReminder,
-                    child: Text(
-                      'Save Reminder',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF24446D), // Save button color
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero, // No rounding
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                // Delete Reminder Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 60, // Smaller delete button size
-                  child: TextButton(
-                    onPressed: _deleteReminder,
-                    child: Text(
-                      'Delete Reminder',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero, // No rounding
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.all(0),
+              child: SizedBox(
+                width: 360,
+                height: 73,
+                child: ElevatedButton(
+                  onPressed: _saveReminder,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF24446D),
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text('Save Reminder'),
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: _deleteReminder,
+              child: Text('Delete Reminder'),
+              style: TextButton.styleFrom(backgroundColor: Colors.red),
+            ),
+          ],
         ),
       ),
     );
