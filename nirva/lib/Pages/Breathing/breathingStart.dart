@@ -1,7 +1,9 @@
-import 'dart:async'; // ตัวจับเวลา
+import 'dart:async';
+import 'dart:typed_data'; // เพิ่มเพื่อใช้ Uint8List
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // สำหรับ rootBundle
+import 'package:audioplayers/audioplayers.dart'; // audioplayers
 import 'package:nirva/Pages/Breathing/Breathing.dart';
-import 'package:audioplayers/audioplayers.dart'; //  audioplayers
 
 class BreathingstartScreen extends StatefulWidget {
   final int remainingCycles;
@@ -21,7 +23,7 @@ class BreathingstartScreen extends StatefulWidget {
 }
 
 class _BreathingstartScreenState extends State<BreathingstartScreen> {
-  String _breatheText = 'Breathe In';
+  String _breatheText = 'Start'; // เริ่มต้นด้วยข้อความ Start
   late Timer _timer;
   bool _isPaused = false;
   int _elapsedSeconds = 0;
@@ -30,6 +32,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
   late int _breatheInDuration;
   late int _holdDuration;
   late int _breatheOutDuration;
+  bool _isStartPhase = true; // ตัวแปรเพื่อเช็คว่าอยู่ในเฟสเริ่มต้นหรือไม่
 
   final AudioPlayer _audioPlayer = AudioPlayer(); // สร้าง AudioPlayer สำหรับเล่นเสียง
 
@@ -43,55 +46,70 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
     _breatheOutDuration = widget.breatheOutDuration;
 
     _cycleDuration = _breatheInDuration + _holdDuration + _breatheOutDuration;
-    _startBreathingCycle();
+
+    _playStartSoundAndBeginCycle(); // เริ่มเล่นเสียง Start และเริ่มจับเวลา
   }
 
-  // ฟังก์ชันสำหรับเล่นเสียง
+  // ฟังก์ชันสำหรับเล่นเสียงจาก assets
   Future<void> _playSound(String soundPath) async {
-    await _audioPlayer.play(AssetSource(soundPath));
+    try {
+      final ByteData data = await rootBundle.load(soundPath); // โหลดไฟล์เสียงจาก assets
+      final Uint8List bytes = data.buffer.asUint8List(); // แปลงเป็น Uint8List
+      await _audioPlayer.play(BytesSource(bytes)); // เล่นเสียงจาก bytes
+    } catch (e) {
+      print('Error loading sound: $e'); // แสดงข้อความหากมีข้อผิดพลาด
+    }
+  }
+
+  // ฟังก์ชันสำหรับเล่นเสียง Start และเริ่มจับเวลา
+  Future<void> _playStartSoundAndBeginCycle() async {
+    await _playSound('assets/sound/start.mp3');
+    
+    setState(() {
+      _breatheText = 'Start'; // ตั้งค่าให้ข้อความแสดงเป็น "Start"
+      _isStartPhase = false;  // เปลี่ยนสถานะเป็นเฟสหายใจ
+    });
+     // เล่นเสียง Breathe In ทันทีหลังจาก Start
+    await Future.delayed(Duration(seconds: 1)); // เพิ่ม delay เพื่อให้เสียงเล่นต่อเนื่อง
+    await _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Breathe In
+  
+    _startBreathingCycle();  // เริ่มรอบหายใจ
   }
 
   void _startBreathingCycle() {
     _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-      if (!_isPaused && _remainingCycles > 0) {
-        setState(() {
-          _elapsedSeconds++;
-          int secondsInCycle = _elapsedSeconds % _cycleDuration;
+    if (!_isPaused && _remainingCycles > 0) {
+      setState(() {
+        _elapsedSeconds++;
+        int secondsInCycle = _elapsedSeconds % _cycleDuration;
 
-          if (secondsInCycle == 0) {
-            _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Breathe In
+        if (secondsInCycle == 0) {
+          _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Breathe In
+        }
+
+        if (secondsInCycle < _breatheInDuration) {
+          _breatheText = 'Breathe In';
+        } else if (secondsInCycle == _breatheInDuration) {
+          _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Hold
+        } else if (secondsInCycle < _breatheInDuration + _holdDuration) {
+          _breatheText = 'Hold';
+        } else if (secondsInCycle == _breatheInDuration + _holdDuration) {
+          _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Breathe Out
+        } else if (secondsInCycle < _breatheInDuration + _holdDuration + _breatheOutDuration) {
+          _breatheText = 'Breathe Out';
+        }
+
+        if (secondsInCycle == _cycleDuration - 1) {
+          _remainingCycles--;
+          if (_remainingCycles == 0) {
+            _timer.cancel();
+            _breatheText = 'FINISH';
+            _playSound('assets/sound/finish.mp3'); // เล่นเสียง Finish
           }
-
-          if (secondsInCycle < _breatheInDuration) {
-            _breatheText = 'Breathe In';
-          } else if (secondsInCycle == _breatheInDuration) {
-            _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Hold
-          } else if (secondsInCycle < _breatheInDuration + _holdDuration) {
-            _breatheText = 'Hold';
-          } else if (secondsInCycle == _breatheInDuration + _holdDuration) {
-            _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Breathe Out
-          } else if (secondsInCycle < _breatheInDuration + _holdDuration + _breatheOutDuration) {
-            _breatheText = 'Breathe Out';
-          }
-
-          if (secondsInCycle == _cycleDuration - 1) {
-            _remainingCycles--;
-            if (_remainingCycles == 0) {
-              _timer.cancel();
-              _breatheText = 'FINISH';
-              _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Finish
-            }
-          }
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel(); // หยุดจับเวลาเมื่อหน้า widget ถูกลบ
-    _audioPlayer.dispose(); // ปิดการทำงานของ AudioPlayer
-    super.dispose();
+        }
+      });
+    }
+  });
   }
 
   @override
@@ -115,7 +133,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/image/background2.png'), // เพิ่มภาพพื้นหลังเมฆ
+            image: AssetImage('assets/video/background2.png'), // เพิ่มภาพพื้นหลังเมฆ
             fit: BoxFit.cover,
           ),
         ),
@@ -123,7 +141,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // วงกลมข้อความหายใจ
+              // วงกลมข้อความ
               Container(
                 width: 200,
                 height: 200,
@@ -144,7 +162,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
                   ),
                 ),
               ),
-              
+
               SizedBox(height: 20),
               
               // ข้อความ "cycle left"
