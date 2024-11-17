@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart'; // for formatting time
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class SetReminderPage extends StatefulWidget {
   @override
@@ -6,43 +10,52 @@ class SetReminderPage extends StatefulWidget {
 }
 
 class _SetReminderPageState extends State<SetReminderPage> {
-  final _formKey = GlobalKey<FormState>();
-  String _name = '';
-  TimeOfDay? _time;
-  DateTime? _selectedDate;
-  List<String> _repeatOptions = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  TimeOfDay _selectedTime = TimeOfDay.now();
+  DateTime _selectedDate = DateTime.now();
   List<String> _selectedDays = [];
+  String _notificationSound = 'default';
 
-  // Function to select the time
-  void _selectTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
+  @override
+  void initState() {
+    super.initState();
+    tz.initializeTimeZones();
+  }
+
+  // Set notification time
+  void _selectTime() async {
+    final TimeOfDay? newTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: _selectedTime,
     );
-    if (pickedTime != null && pickedTime != _time) {
+    if (newTime != null) {
       setState(() {
-        _time = pickedTime;
+        _selectedTime = newTime;
       });
     }
   }
 
-  // Function to select the date from the calendar
-  void _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
+  // Set the start date of the reminder
+  void _selectDate() async {
+    final DateTime? newDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2023), // Set the first date (can be any date)
-      lastDate: DateTime(2101),  // Set the last date (can be any date)
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
     );
-    if (pickedDate != null && pickedDate != _selectedDate) {
+    if (newDate != null) {
       setState(() {
-        _selectedDate = pickedDate;
+        _selectedDate = newDate;
       });
     }
   }
 
-  // Function to toggle the selected repeat days
-  void _toggleDaySelection(String day) {
+  // Toggle days of the week
+  void _toggleDay(String day) {
     setState(() {
       if (_selectedDays.contains(day)) {
         _selectedDays.remove(day);
@@ -52,27 +65,121 @@ class _SetReminderPageState extends State<SetReminderPage> {
     });
   }
 
+  // Set notification sound
+  void _selectSound(String sound) {
+    setState(() {
+      _notificationSound = sound;
+    });
+  }
+
   // Save the reminder
-  void _saveReminder() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      Navigator.pop(context, {
-        'name': _name,
-        'time': _time,
-        'date': _selectedDate,
-        'repeat': _selectedDays,
-      });
+  void _saveReminder() async {
+    // Check if the reminder name is empty
+    if (_selectedDays.isEmpty && _nameController.text.isEmpty) {
+      _showAlertDialog('Error', 'Please select at least one day and enter a name for the reminder');
+      return;
     }
+    if (_nameController.text.isEmpty) {
+      _showAlertDialog('Error', 'Please enter a name for the reminder');
+      return;
+    }
+
+    // Check if no days have been selected
+    if (_selectedDays.isEmpty) {
+      _showAlertDialog('Error', 'Please select at least one day');
+      return;
+    }
+
+    // Combine all the data into a map
+    DateTime reminderDateTime = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+      _selectedTime.hour,
+      _selectedTime.minute,
+    );
+
+    // Check if the selected reminder time is in the past today
+    if (reminderDateTime.isBefore(DateTime.now())) {
+      reminderDateTime = reminderDateTime.add(Duration(days: 1));
+    }
+
+    final reminderData = {
+      'name': _nameController.text,
+      'time': reminderDateTime,
+      'repeat': _selectedDays.join(', '),
+      'sound': _notificationSound,
+      'description': _descriptionController.text,
+    };
+
+    // Schedule the notification
+    await _scheduleNotification(reminderDateTime);
+
+    // Return the reminder data to the previous screen
+    Navigator.pop(context, reminderData);
+  }
+
+  // Function to show the alert dialog
+  void _showAlertDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Scheduling the notification
+  Future<void> _scheduleNotification(DateTime reminderDateTime) async {
+    var androidDetails = AndroidNotificationDetails(
+      'reminder_channel_id',
+      'Reminders',
+      channelDescription: 'This channel is for reminder notifications',
+      importance: Importance.high,
+      priority: Priority.high,
+      sound: _notificationSound == 'default'
+          ? null
+          : RawResourceAndroidNotificationSound(
+              _notificationSound),
+    );
+
+    var platformDetails = NotificationDetails(android: androidDetails);
+
+    // Convert the reminder time into a timezone-aware time
+    tz.TZDateTime scheduledDate = tz.TZDateTime.from(reminderDateTime, tz.local);
+
+    // Schedule the notification
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      'Reminder: ${_nameController.text}',
+      _descriptionController.text,
+      scheduledDate,
+      platformDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.wallClockTime,
+      payload: 'reminder_payload',
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         title: Text('Set Reminder'),
-        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0, // Removes the shadow
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -81,95 +188,99 @@ class _SetReminderPageState extends State<SetReminderPage> {
             fit: BoxFit.cover,
           ),
         ),
-        padding: EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Reminder Name Field
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Reminder Name',
-                  filled: true,
-                  fillColor: Color(0xFFB6D3F3),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView( // This makes the form scrollable
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _nameController,
+                      decoration: InputDecoration(labelText: 'Reminder Name'),
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: _descriptionController,
+                      decoration: InputDecoration(labelText: 'Description'),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text('Select Time: '),
+                        Text(_selectedTime.format(context)),
+                        IconButton(
+                          icon: Icon(Icons.access_time),
+                          onPressed: _selectTime,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text('Start Date: '),
+                        Text(DateFormat.yMd().format(_selectedDate)),
+                        IconButton(
+                          icon: Icon(Icons.calendar_today),
+                          onPressed: _selectDate,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Text('Repeat On:'),
+                    Wrap(
+                      spacing: 8,
+                      children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                          .map((day) {
+                        return ChoiceChip(
+                          label: Text(day),
+                          selected: _selectedDays.contains(day),
+                          onSelected: (_) => _toggleDay(day),
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text('Select Sound: '),
+                        DropdownButton<String>(
+                          value: _notificationSound,
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              _selectSound(newValue);
+                            }
+                          },
+                          items: ['default', 'Frog', 'Wahh']
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter a name' : null,
-                onSaved: (value) => _name = value!,
               ),
-              SizedBox(height: 20),
-
-              // Date Picker (Calendar)
-              GestureDetector(
-                onTap: () => _selectDate(context),
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFB6D3F3),
-                    borderRadius: BorderRadius.circular(10),
+            ),
+            // Save Button at the bottom
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SizedBox(
+                width: 360,  // width = 360
+                height: 73,  // height = 73
+                child: ElevatedButton(
+                  onPressed: _saveReminder,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF24446D),  // Background color
+                    foregroundColor: Colors.white,  // Text color
                   ),
-                  child: Text(
-                    _selectedDate == null ? 'Select Date' : '${_selectedDate!.toLocal()}'.split(' ')[0],
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  child: Text('Save Reminder'),
                 ),
               ),
-              SizedBox(height: 20),
-
-              // Time Picker
-              GestureDetector(
-                onTap: () => _selectTime(context),
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFB6D3F3),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    _time == null ? 'Select Time' : _time!.format(context),
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Repeat Days
-              Text(
-                'Repeat On:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Wrap(
-                spacing: 10,
-                children: _repeatOptions.map((day) {
-                  final bool isSelected = _selectedDays.contains(day);
-                  return FilterChip(
-                    label: Text(day),
-                    selected: isSelected,
-                    backgroundColor: Color(0xFFB6D3F3),
-                    selectedColor: Color(0xFF64ADE4),
-                    onSelected: (_) => _toggleDaySelection(day),
-                  );
-                }).toList(),
-              ),
-              Spacer(),
-
-              // Save Reminder Button
-              ElevatedButton(
-                onPressed: _saveReminder,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF64ADE4),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  elevation: 5,
-                ),
-                child: Text(
-                  'Save Reminder',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
