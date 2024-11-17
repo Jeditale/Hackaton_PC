@@ -1,13 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:nirva/pages/getpremium_page.dart';
-import 'package:nirva/pages/welcome.dart';
 import 'package:nirva/services/notification_services.dart';
-import 'pages/mainmenu_page.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,7 +50,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // Optional: Hide the debug banner
-      home: MainMenu(), 
+      home: GetPremiumPage(), 
     );
   }
 }

@@ -8,7 +8,6 @@ import 'package:nirva/Pages/shop.dart';
 import 'package:nirva/pages/progress.dart';
 import 'profile.dart';
 import 'Reminder/reminder_page.dart';
-import 'getpremium_page.dart';
 import 'package:nirva/hotbar/hotbar_navigation.dart';
 
 class MainMenu extends StatefulWidget {
@@ -172,13 +171,13 @@ class _MainMenuState extends State<MainMenu> {
       ),
       onPressed: () {
         print('$title button pressed');
-        if('$title' == 'Breathing'){
+        if(title == 'Breathing'){
           Navigator.push(context, MaterialPageRoute(builder: (context) => BreathingScreen()));
         }
-        else if('$title' == 'Meditate'){
+        else if(title == 'Meditate'){
           Navigator.push(context, MaterialPageRoute(builder: (context) => MeditationScreen()));
         }
-        else if('$title' == 'Progress'){
+        else if(title == 'Progress'){
           Navigator.push(context, MaterialPageRoute(builder: (context) => ProgressPageApp()));
         }
         // else if('$title' == 'Quiz'){

@@ -14,7 +14,7 @@ class WelcomeScreen extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/background1.png'), // ระบุภาพพื้นหลัง
+                image: AssetImage('assets/image/background1.png'), // ระบุภาพพื้นหลัง
                 fit: BoxFit.cover, // ให้ภาพเต็มหน้าจอ
               ),
             ),

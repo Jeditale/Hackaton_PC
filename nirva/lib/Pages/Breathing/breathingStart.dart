@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:typed_data'; // เพิ่มเพื่อใช้ Uint8List
+// เพิ่มเพื่อใช้ Uint8List
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // สำหรับ rootBundle
 import 'package:audioplayers/audioplayers.dart'; // audioplayers
@@ -133,7 +133,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/video/background2.png'), // เพิ่มภาพพื้นหลังเมฆ
+            image: AssetImage('assets/image/background2.png'), // เพิ่มภาพพื้นหลังเมฆ
             fit: BoxFit.cover,
           ),
         ),

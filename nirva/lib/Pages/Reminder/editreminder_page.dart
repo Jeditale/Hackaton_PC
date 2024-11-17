@@ -276,8 +276,8 @@ class _EditReminderPageState extends State<EditReminderPage> {
             ),
             TextButton(
               onPressed: _deleteReminder,
-              child: Text('Delete Reminder'),
               style: TextButton.styleFrom(backgroundColor: Colors.red),
+              child: Text('Delete Reminder'),
             ),
           ],
         ),

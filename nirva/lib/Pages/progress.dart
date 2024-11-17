@@ -96,7 +96,7 @@ class _ProgressPageState extends State<ProgressPage> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          Container(
+                          SizedBox(
                             height: 300,
                             child: PiechartSample(), // Display the Pie Chart here
                           ),
@@ -136,7 +136,7 @@ class _ProgressPageState extends State<ProgressPage> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          Container(
+                          SizedBox(
                             height: 300,
                             child: MyBarTotal(), // Display the Pie Chart here
                           ),
@@ -163,10 +163,10 @@ class ProgressCard extends StatelessWidget {
   final String title;
 
   const ProgressCard({
-    Key? key,
+    super.key,
     required this.icon,
     required this.title,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

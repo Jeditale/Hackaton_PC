@@ -115,16 +115,16 @@ Widget build(BuildContext context) {
         ),
       ),
     ),
-    floatingActionButton: Container(
+    floatingActionButton: SizedBox(
       width: 65, // Rounded button size
       height: 65,
       child: FloatingActionButton(
         onPressed: _addNewReminder,
-        backgroundColor: Color(0xFF64ADE4), // Button background color
-        child: Icon(Icons.add),
+        backgroundColor: Color(0xFF64ADE4),
         shape: CircleBorder(
           side: BorderSide(color: Colors.black, width: 2), // Black border
-        ),
+        ), // Button background color
+        child: Icon(Icons.add),
       ),
     ),
     bottomNavigationBar: HotbarNavigation(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nirva/Pages/welcome.dart';
-import 'package:nirva/pages/mainmenu_page.dart';  // Import your MainMenu page if not already imported
+// Import your MainMenu page if not already imported
 
 class ResultPage extends StatelessWidget {
   final int totalScore;

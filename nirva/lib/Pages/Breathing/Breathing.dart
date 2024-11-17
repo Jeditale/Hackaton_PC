@@ -109,7 +109,8 @@ class _BreathingScreenState extends State<BreathingScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Circular video player with counter display on top
-              Container(
+            // Circular video player with counter display on top
+Container(
   width: 200,
   height: 200,
   decoration: BoxDecoration(
@@ -122,12 +123,16 @@ class _BreathingScreenState extends State<BreathingScreen> {
       // Video inside the circle
       ClipOval(
         child: _controller.value.isInitialized
-            ? FittedBox(
-                fit: BoxFit.cover, // Ensures the video covers the circle
-                child: SizedBox(
-                  width: _controller.value.size.width,
-                  height: _controller.value.size.height,
-                  child: VideoPlayer(_controller),
+            ? SizedBox(
+                width: 200,
+                height: 200,
+                child: FittedBox(
+                  fit: BoxFit.cover, // Ensures video fills the circle
+                  child: SizedBox(
+                    width: _controller.value.size.width,
+                    height: _controller.value.size.height,
+                    child: VideoPlayer(_controller),
+                  ),
                 ),
               )
             : Center(child: CircularProgressIndicator()), // Show loading while video initializes
@@ -138,11 +143,7 @@ class _BreathingScreenState extends State<BreathingScreen> {
         children: [
           Text(
             '$cycleCount', // Display dynamic cycle count
-            style: TextStyle(
-              fontSize: 35,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           Text(
             'cycles',
@@ -277,44 +278,34 @@ class _BreathingScreenState extends State<BreathingScreen> {
 
               // Start button
               Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-  child: ElevatedButton(
-    onPressed: () {
-      if (selectedBreathingPattern == 'Breathing Pattern') {
-        // ถ้ายังไม่ได้เลือก Breathing Pattern จะแสดง SnackBar
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Please select a Breathing Pattern before starting'),
-          ),
-        );
-      } else {
-        // ถ้าเลือกแล้วก็ไปที่หน้า BreathingstartScreen
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return BreathingstartScreen(
-              remainingCycles: _remainingCycles,
-              breatheInDuration: _breatheInDuration,
-              holdDuration: _holdDuration,
-              breatheOutDuration: _breatheOutDuration,
-            );
-          },
-        ));
-      }
-    },
-    style: ElevatedButton.styleFrom(
-      padding: EdgeInsets.symmetric(vertical: 15),
-      backgroundColor: Colors.black,
-      minimumSize: Size(double.infinity, 50),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-    ),
-    child: Text(
-      'Start',
-      style: TextStyle(fontSize: 25, color: Colors.white),
-    ),
-  ),
-),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return BreathingstartScreen(
+                          remainingCycles: _remainingCycles,
+                          breatheInDuration: _breatheInDuration,
+                          holdDuration: _holdDuration,
+                          breatheOutDuration: _breatheOutDuration,
+                        );
+                      },
+                    ));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    backgroundColor: Colors.black,
+                    minimumSize: Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    'Start',
+                    style: TextStyle(fontSize: 25, color: Colors.white),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
