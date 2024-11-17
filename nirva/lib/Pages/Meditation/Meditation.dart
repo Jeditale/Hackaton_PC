@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nirva/Pages/BreathAndMeditation.dart';
 import 'meditationStart.dart';
@@ -10,6 +12,31 @@ class MeditationScreen extends StatefulWidget {
 class _BreathingScreenState extends State<MeditationScreen> {
   String selectedBreathingPattern = 'Background Music';
   String selectedVoice = 'Voice';
+
+  Future<void> updateMedCount(String userId) async {
+    try {
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+
+      // Fetch the current
+      final snapshot = await userDoc.get();
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        int currentMedCount = data['meditateCount'] ?? 0;
+
+        // Calculate
+        int newMedCount = currentMedCount + 1;
+
+        // Update Firestore
+        await userDoc.update({'meditateCount': newMedCount});
+        print('meditateCount updated successfully to $newMedCount!');
+      } else {
+        print('User document does not exist. Creating a new one.');
+
+      }
+    } catch (e) {
+      print('Error updating breathCount: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +199,14 @@ class _BreathingScreenState extends State<MeditationScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final user = FirebaseAuth.instance.currentUser;
+
+                    if (user != null) {
+                      await updateMedCount(user.uid);
+                    } else {
+                      print('User not logged in!');
+                    }
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return MeditationstartScreen();

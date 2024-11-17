@@ -193,7 +193,7 @@ class _GetPremiumPageState extends State<GetPremiumPage> {
                   height: 46,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pop(context); // Navigate to main page for now
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen())); // Navigate to main page for now
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF24446D),

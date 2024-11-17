@@ -1,33 +1,51 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 
-void main() {
-  runApp(const PiechartApp());
-}
-
-class PiechartApp extends StatelessWidget {
-  const PiechartApp({super.key});
+class PiechartSample extends StatefulWidget {
+  const PiechartSample({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Pie Chart Example',
-      home: PiechartSample(),
-    );
-  }
+  State<PiechartSample> createState() => _PiechartSampleState();
 }
 
-class PiechartSample extends StatelessWidget {
+class _PiechartSampleState extends State<PiechartSample> {
   Map<String, double> dataMap = {
-    "Breathing Exercise": 7, //count from user
-    "Meditation": 5,//count from user
+    "Breathing Exercise": 0, // Default value
+    "Meditation": 0,         // Default value
   };
-  List<Color> colorList =[
+  List<Color> colorList = [
     const Color.fromRGBO(182, 211, 243, 100),
     const Color.fromRGBO(68, 121, 168, 100),
   ];
 
-  PiechartSample({super.key});
+  @override
+  void initState() {
+    super.initState();
+    fetchData(); // Fetch data when the widget is initialized
+  }
+
+  // Fetch data from Firestore
+  Future<void> fetchData() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      final doc = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get(); // Replace 'user_id' with the actual user's UID
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        setState(() {
+          dataMap = {
+            "Breathing Exercise": (data['breathCount'] ?? 0).toDouble(),
+            "Meditation": (data['meditateCount'] ?? 0).toDouble(),
+          };
+        });
+      } else {
+        print("Document does not exist");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,21 +56,22 @@ class PiechartSample extends StatelessWidget {
         centerTitle: true,
       ),
       body: Center(
-        child: PieChart(
-          colorList: colorList,
-          dataMap: dataMap,
-          chartRadius: MediaQuery.of(context).size.width / 1.5,
-          legendOptions: const LegendOptions(
-            showLegendsInRow: true,
-            legendPosition: LegendPosition.bottom
-          ),
-          chartValuesOptions: 
-            const ChartValuesOptions(
-              showChartValuesInPercentage: true,
-              showChartValueBackground: false,
-            ),
-        )
-      )
+        child: dataMap["Breathing Exercise"] == 0 && dataMap["Meditation"] == 0
+            ? const CircularProgressIndicator() // Show a loading indicator until data is fetched
+            : PieChart(
+                colorList: colorList,
+                dataMap: dataMap,
+                chartRadius: MediaQuery.of(context).size.width / 1.5,
+                legendOptions: const LegendOptions(
+                  showLegendsInRow: true,
+                  legendPosition: LegendPosition.bottom,
+                ),
+                chartValuesOptions: const ChartValuesOptions(
+                  showChartValuesInPercentage: true,
+                  showChartValueBackground: false,
+                ),
+              ),
+      ),
     );
   }
 }

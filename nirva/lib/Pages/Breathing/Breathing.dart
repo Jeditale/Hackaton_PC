@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart'; // Import the video player package
 import 'package:nirva/Pages/BreathAndMeditation.dart';
 import 'package:nirva/Pages/Breathing/breathingStart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BreathingScreen extends StatefulWidget {
   @override
@@ -78,6 +80,32 @@ class _BreathingScreenState extends State<BreathingScreen> {
         _remainingCycles = 0;
     }
   }
+  // Method to update breathCount in Firestore
+  Future<void> updateBreathCount(String userId) async {
+    try {
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+
+      // Fetch
+      final snapshot = await userDoc.get();
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        int currentBreathCount = data['breathCount'] ?? 0;
+
+        // Calculate
+        int newBreathCount = currentBreathCount + 1;
+
+        // Update Firestore
+        await userDoc.update({'breathCount': newBreathCount});
+        print('breathCount updated successfully to $newBreathCount!');
+      } else {
+        print('User document does not exist. Creating a new one.');
+
+      }
+    } catch (e) {
+      print('Error updating breathCount: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -277,10 +305,21 @@ Container(
               SizedBox(height: 20),
 
               // Start button
+              // Start button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    // Assuming the user ID is obtained from FirebaseAuth
+                    final user = FirebaseAuth.instance.currentUser;
+
+                    if (user != null) {
+                      await updateBreathCount(user.uid); // Update the Firestore breathCount
+                    } else {
+                      print('User not logged in!');
+                    }
+
+                    // Navigate to the breathing start screen
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return BreathingstartScreen(

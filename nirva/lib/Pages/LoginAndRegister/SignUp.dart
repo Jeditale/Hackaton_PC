@@ -35,6 +35,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'name': _nameController.text.trim(),
         'phone': _phoneController.text.trim(),
         'email': _emailController.text.trim(),
+        'breathCount': 0,
+        'meditateCount':0,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(

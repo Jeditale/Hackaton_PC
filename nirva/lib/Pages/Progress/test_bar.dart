@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -11,14 +13,37 @@ class MyBarTotal extends StatefulWidget {
 
 class _MyBarState extends State<MyBarTotal> {
   List<double> weeklySummary = [
-    10,
-    50,
-    40,
-    10,
-    20,
-    35,
-    10,
+    0,
+    0,
   ];
+  @override
+  void initState() {
+    super.initState();
+    fetchWeeklyData(); // Fetch Firestore data when the widget is initialized
+  }
+
+  Future<void> fetchWeeklyData() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      final doc = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        setState(() {
+          weeklySummary = [
+            (data['breathCount'] ?? 0).toDouble(),
+            (data['meditateCount'] ?? 0).toDouble(),
+          ];
+        });
+      } else {
+        print("Document does not exist");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,35 +78,22 @@ class IndividualBar {
 }
 
 class BarData {
-  final double sunAmount;
-  final double monAmount;
-  final double tueAmount;
-  final double wedAmount;
-  final double thuAmount;
-  final double friAmount;
-  final double satAmount;
+  final double breathAmount;
+  final double medAmount;
+
 
   BarData({
-    required this.sunAmount,
-    required this.monAmount,
-    required this.tueAmount,
-    required this.wedAmount,
-    required this.thuAmount,
-    required this.friAmount,
-    required this.satAmount,
+    required this.breathAmount,
+    required this.medAmount,
+
   });
 
   List<IndividualBar> barData = [];
 
   void initializeBarData() {
     barData = [
-      IndividualBar(x: 0, y: sunAmount),
-      IndividualBar(x: 0, y: monAmount),
-      IndividualBar(x: 0, y: tueAmount),
-      IndividualBar(x: 0, y: wedAmount),
-      IndividualBar(x: 0, y: thuAmount),
-      IndividualBar(x: 0, y: friAmount),
-      IndividualBar(x: 0, y: satAmount),
+      IndividualBar(x: 0, y: breathAmount),
+      IndividualBar(x: 1, y: medAmount),
 
     ];
   }
@@ -98,28 +110,27 @@ class MyBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BarData myBar = BarData(
-      sunAmount: weeklySummary[0], 
-      monAmount: weeklySummary[1], 
-      tueAmount: weeklySummary[2], 
-      wedAmount: weeklySummary[3], 
-      thuAmount: weeklySummary[4], 
-      friAmount: weeklySummary[5], 
-      satAmount: weeklySummary[6],
+      breathAmount: weeklySummary[0], 
+      medAmount: weeklySummary[1], 
     );
     myBar.initializeBarData();
     return BarChart(
       BarChartData(
         backgroundColor: Colors.white,
-        maxY: 50,
+        maxY: 25,
         minY: 0,
         gridData: FlGridData(show: false),
         // borderData: FlBorderData(show: false),
-        // titlesData: FlTitlesData(
-        //   show: true,
-        //   topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        //   leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        //   rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false))
-        // ),
+        titlesData: FlTitlesData(
+          show: true,
+          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: getButtomTitles
+              ),
+            ),
+        ),
         barGroups: myBar.barData
           .map(
             (data) => BarChartGroupData(
@@ -128,11 +139,11 @@ class MyBarChart extends StatelessWidget {
                 BarChartRodData(
                   toY: data.y,
                   color: Colors.lightBlue,
-                  width: 25,
+                  width: 30,
                   borderRadius: BorderRadius.circular(0),
                   backDrawRodData: BackgroundBarChartRodData(
                     show: true,
-                    toY: 50,
+                    toY: 25,
                     color: const Color.fromARGB(105, 188, 226, 244),
                   )
                 ),
@@ -143,4 +154,27 @@ class MyBarChart extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget getButtomTitles(double value, TitleMeta meta) {
+  const style = TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    fontSize: 14,
+  );
+
+  Widget text;
+  switch (value.toInt()) {
+    case 0:
+      text = Text('Breathing', style: style);
+      break;
+    case 1:
+      text = Text('Meditation', style: style);
+      break;
+    default:
+      text = Text('', style: style);
+      break;
+  }
+  
+  return SideTitleWidget(axisSide: meta.axisSide, child: text);
 }

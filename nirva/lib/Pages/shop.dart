@@ -14,6 +14,7 @@ class ShopPage extends StatefulWidget {
 
 class _ShopPageState extends State<ShopPage> {
   int _currentIndex = 3; // Default to ShopPage index in hotbar
+  final Set<String> ownedProducts = {}; // Track owned product IDs
 
   // Handle hotbar navigation
   void _onTabTapped(int index) {
@@ -33,8 +34,15 @@ class _ShopPageState extends State<ShopPage> {
     }
   }
 
+  // Handle product purchase
+  void _handlePurchase(String productId) {
+    setState(() {
+      ownedProducts.add(productId); // Mark product as owned
+    });
+  }
+
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
@@ -45,7 +53,7 @@ class _ShopPageState extends State<ShopPage> {
               fit: BoxFit.cover,
             ),
           ),
-          // Page Content with Transparent Background
+          // Page Content
           SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
@@ -59,8 +67,8 @@ class _ShopPageState extends State<ShopPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-            SizedBox(height: 10),
-            StreamBuilder<QuerySnapshot>(
+                SizedBox(height: 10),
+                StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('nirva-voice')
                       .snapshots(),
@@ -71,7 +79,11 @@ class _ShopPageState extends State<ShopPage> {
 
                     return Column(
                       children: snapshot.data!.docs.map((doc) {
-                        return ProductCard(documentSnapshot: doc);
+                        return ProductCard(
+                          documentSnapshot: doc,
+                          isOwned: ownedProducts.contains(doc.id),
+                          onBuy: () => _handlePurchase(doc.id),
+                        );
                       }).toList(),
                     );
                   },
@@ -97,7 +109,11 @@ class _ShopPageState extends State<ShopPage> {
 
                     return Column(
                       children: snapshot.data!.docs.map((doc) {
-                        return ProductCard(documentSnapshot: doc);
+                        return ProductCard(
+                          documentSnapshot: doc,
+                          isOwned: ownedProducts.contains(doc.id),
+                          onBuy: () => _handlePurchase(doc.id),
+                        );
                       }).toList(),
                     );
                   },
@@ -111,21 +127,21 @@ class _ShopPageState extends State<ShopPage> {
   }
 }
 
-class ProductCard extends StatefulWidget {
+
+class ProductCard extends StatelessWidget {
   final DocumentSnapshot documentSnapshot;
+  final bool isOwned; // Indicates if the product is owned
+  final VoidCallback onBuy; // Callback for the Buy button
 
-  ProductCard({required this.documentSnapshot});
-
-  @override
-  _ProductCardState createState() => _ProductCardState();
-}
-
-class _ProductCardState extends State<ProductCard> {
-  bool isOwned = false; // Track if the product has been purchased
+  ProductCard({
+    required this.documentSnapshot,
+    required this.isOwned,
+    required this.onBuy,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final data = widget.documentSnapshot.data() as Map<String, dynamic>;
+    final data = documentSnapshot.data() as Map<String, dynamic>;
 
     final String name = data['name'] ?? 'No Name';
     final String description = data['description'] ?? 'No Description';
@@ -163,13 +179,7 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                   SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: isOwned
-                        ? null // Disable button if owned
-                        : () {
-                            setState(() {
-                              isOwned = true; // Update state to "owned"
-                            });
-                          },
+                    onPressed: isOwned ? null : onBuy, // Disable if owned
                     style: ElevatedButton.styleFrom(
                       backgroundColor: isOwned ? Colors.grey : Colors.blue,
                       shape: RoundedRectangleBorder(

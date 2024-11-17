@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nirva/Pages/BreathAndMeditation.dart';
 import 'package:nirva/Pages/Reminder/reminder_page.dart';
@@ -45,6 +47,7 @@ class _ProgressPageState extends State<ProgressPage> {
       Navigator.push(context, MaterialPageRoute(builder: (context) => BreathAndMeditationScreen())); // Adjust as needed
     }
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -106,16 +109,7 @@ class _ProgressPageState extends State<ProgressPage> {
                   ),
                   
                   SizedBox(height: 20),
-                  Text(
-                    'Progress',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-            
+                  
                   // Breathing Exercise card
                   Card(
                     color: Colors.blue[100]?.withOpacity(0.8), // Slight transparency for background visibility
@@ -128,7 +122,7 @@ class _ProgressPageState extends State<ProgressPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'This month progress',
+                            'Weekly Progress',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
@@ -217,40 +211,76 @@ class ProgressCard extends StatelessWidget {
   }
 }
 
-// PiechartSample Widget
-class PiechartSample extends StatelessWidget {
-  final Map<String, double> dataMap = {
-    "Breathing Exercise": 7, // count from user
-    "Meditation": 5,         // count from user
+class PiechartSample extends StatefulWidget {
+  const PiechartSample({super.key});
+
+  @override
+  State<PiechartSample> createState() => _PiechartSampleState();
+}
+
+class _PiechartSampleState extends State<PiechartSample> {
+  Map<String, double> dataMap = {
+    "Breathing Exercise": 0, // Default values
+    "Meditation": 0,
   };
+
   final List<Color> colorList = [
     const Color.fromARGB(156, 215, 235, 255),
     const Color.fromRGBO(68, 121, 168, 100),
   ];
 
-  PiechartSample({super.key});
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData(); // Fetch Firestore data when the widget is initialized
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      final doc = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+      
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        setState(() {
+          dataMap = {
+            "Breathing Exercise": (data['breathCount'] ?? 0).toDouble(),
+            "Meditation": (data['meditateCount'] ?? 0).toDouble(),
+          };
+          isLoading = false; // Data has been loaded
+        });
+      } else {
+        print("Document does not exist");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return PieChart(
-      colorList: colorList,
-      dataMap: dataMap,
-      chartRadius: MediaQuery.of(context).size.width / 1.5,
-      legendOptions: const LegendOptions(
-        showLegendsInRow: true,
-        legendPosition: LegendPosition.bottom,
-      ),
-      chartValuesOptions: const ChartValuesOptions(
-        showChartValuesInPercentage: true,
-        showChartValuesOutside: false,
-        showChartValueBackground: false,
-        chartValueStyle: TextStyle(
-          fontSize: 16,
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
+    return isLoading
+        ? const Center(child: CircularProgressIndicator()) // Show loading spinner while fetching data
+        : PieChart(
+            colorList: colorList,
+            dataMap: dataMap,
+            chartRadius: MediaQuery.of(context).size.width / 1.5,
+            legendOptions: const LegendOptions(
+              showLegendsInRow: true,
+              legendPosition: LegendPosition.bottom,
+            ),
+            chartValuesOptions: const ChartValuesOptions(
+              showChartValuesInPercentage: true,
+              showChartValuesOutside: false,
+              showChartValueBackground: false,
+              chartValueStyle: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          );
   }
 }
-
