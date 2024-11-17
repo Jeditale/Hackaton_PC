@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart'; // Import the video player package
 import 'package:nirva/Pages/BreathAndMeditation.dart';
 import 'package:nirva/Pages/Breathing/breathingStart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,59 +17,40 @@ class _BreathingScreenState extends State<BreathingScreen> {
   int _holdDuration = 2;
   int _breatheOutDuration = 6;
   int _remainingCycles = 0; // Default _remainingCycles
-  late VideoPlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize the video controller with a local asset or network video
-    _controller = VideoPlayerController.asset('assets/video/background_video.mp4')
-      ..initialize().then((_) {
-        setState(() {});
-        _controller.setLooping(true); // Loop the video
-        _controller.play(); // Start playing the video automatically
-      });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose(); // Dispose the controller when the widget is disposed
-    super.dispose();
-  }
 
   void updateCycleCount(String pattern) {
     switch (pattern) {
       case 'Sleep Calm Breath':
-        cycleCount = 10;
-        _remainingCycles = 10;
+        cycleCount = 5;
+        _remainingCycles = 5;
         _breatheInDuration = 4;
         _holdDuration = 2;
         _breatheOutDuration = 6;
         break;
       case 'Quick Reset Breath':
-        cycleCount = 5;
-        _remainingCycles = 5;
+        cycleCount = 3;
+        _remainingCycles = 3;
         _breatheInDuration = 2;
         _holdDuration = 0;
         _breatheOutDuration = 2;
         break;
       case 'Triangle Breath':
-        cycleCount = 8;
-        _remainingCycles = 8;
+        cycleCount = 5;
+        _remainingCycles = 5;
         _breatheInDuration = 4;
         _holdDuration = 4;
         _breatheOutDuration = 4;
         break;
       case 'Single Step Breath':
-        cycleCount = 15;
-        _remainingCycles = 15;
+        cycleCount = 10;
+        _remainingCycles = 10;
         _breatheInDuration = 5;
         _holdDuration = 0;
         _breatheOutDuration = 5;
         break;
       case 'Box Breath':
-        cycleCount = 6;
-        _remainingCycles = 6;
+        cycleCount = 4;
+        _remainingCycles = 4;
         _breatheInDuration = 4;
         _holdDuration = 4;
         _breatheOutDuration = 4;
@@ -136,53 +116,35 @@ class _BreathingScreenState extends State<BreathingScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Circular video player with counter display on top
-            // Circular video player with counter display on top
-Container(
-  width: 200,
-  height: 200,
-  decoration: BoxDecoration(
-    shape: BoxShape.circle,
-    border: Border.all(width: 2),
-  ),
-  child: Stack(
-    alignment: Alignment.center,
-    children: [
-      // Video inside the circle
-      ClipOval(
-        child: _controller.value.isInitialized
-            ? SizedBox(
+              // Circular container with counter display on top
+              Container(
                 width: 200,
                 height: 200,
-                child: FittedBox(
-                  fit: BoxFit.cover, // Ensures video fills the circle
-                  child: SizedBox(
-                    width: _controller.value.size.width,
-                    height: _controller.value.size.height,
-                    child: VideoPlayer(_controller),
-                  ),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.4), // สีพื้นหลังวงกลม
+                  border: Border.all(width: 2, color: Colors.black12), // สีขอบวงกลม
                 ),
-              )
-            : Center(child: CircularProgressIndicator()), // Show loading while video initializes
-      ),
-      // Counter text on top of the video
-      Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '$cycleCount', // Display dynamic cycle count
-            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          Text(
-            'cycles',
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
-        ],
-      ),
-    ],
-  ),
-),
-
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Counter text on top of the circle
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '$cycleCount', // Display dynamic cycle count
+                          style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 0, 0, 0)),
+                        ),
+                        Text(
+                          'cycles',
+                          style: TextStyle(fontSize: 20, color: const Color.fromARGB(255, 0, 0, 0)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 20),
 
               // Breathing Pattern button
@@ -198,23 +160,23 @@ Container(
                   itemBuilder: (BuildContext context) => [
                     PopupMenuItem(
                       value: 'Sleep Calm Breath',
-                      child: Text('Sleep Calm Breath', style: TextStyle(fontSize: 20)),
+                      child: Text('Sleep Calm Breath', style: TextStyle(fontSize: 25)),
                     ),
                     PopupMenuItem(
                       value: 'Quick Reset Breath',
-                      child: Text('Quick Reset Breath', style: TextStyle(fontSize: 20)),
+                      child: Text('Quick Reset Breath', style: TextStyle(fontSize: 25)),
                     ),
                     PopupMenuItem(
                       value: 'Triangle Breath',
-                      child: Text('Triangle Breath', style: TextStyle(fontSize: 20)),
+                      child: Text('Triangle Breath', style: TextStyle(fontSize: 25)),
                     ),
                     PopupMenuItem(
                       value: 'Single Step Breath',
-                      child: Text('Single Step Breath', style: TextStyle(fontSize: 20)),
+                      child: Text('Single Step Breath', style: TextStyle(fontSize: 25)),
                     ),
                     PopupMenuItem(
                       value: 'Box Breath',
-                      child: Text('Box Breath', style: TextStyle(fontSize: 20)),
+                      child: Text('Box Breath', style: TextStyle(fontSize: 25)),
                     ),
                   ],
                   child: Container(
@@ -255,11 +217,11 @@ Container(
                   itemBuilder: (BuildContext context) => [
                     PopupMenuItem(
                       value: 'Eric',
-                      child: Text('Eric', style: TextStyle(fontSize: 20)),
+                      child: Text('Eric', style: TextStyle(fontSize: 25)),
                     ),
                     PopupMenuItem(
                       value: 'Sarah',
-                      child: Text('Sarah', style: TextStyle(fontSize: 20)),
+                      child: Text('Sarah', style: TextStyle(fontSize: 25)),
                     ),
                   ],
                   child: Container(
@@ -305,31 +267,30 @@ Container(
               SizedBox(height: 20),
 
               // Start button
-              // Start button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ElevatedButton(
-                  onPressed: () async {
-                    // Assuming the user ID is obtained from FirebaseAuth
-                    final user = FirebaseAuth.instance.currentUser;
-
-                    if (user != null) {
-                      await updateBreathCount(user.uid); // Update the Firestore breathCount
+                  onPressed: () {
+                    if (selectedBreathingPattern == 'Breathing Pattern') {
+                      // ถ้ายังไม่ได้เลือก Breathing Pattern จะแสดง SnackBar
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Please select a Breathing Pattern before starting'),
+                        ),
+                      );
                     } else {
-                      print('User not logged in!');
+                      // ถ้าเลือกแล้วก็ไปที่หน้า BreathingstartScreen
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return BreathingstartScreen(
+                            remainingCycles: _remainingCycles,
+                            breatheInDuration: _breatheInDuration,
+                            holdDuration: _holdDuration,
+                            breatheOutDuration: _breatheOutDuration,
+                          );
+                        },
+                      ));
                     }
-
-                    // Navigate to the breathing start screen
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return BreathingstartScreen(
-                          remainingCycles: _remainingCycles,
-                          breatheInDuration: _breatheInDuration,
-                          holdDuration: _holdDuration,
-                          breatheOutDuration: _breatheOutDuration,
-                        );
-                      },
-                    ));
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 15),

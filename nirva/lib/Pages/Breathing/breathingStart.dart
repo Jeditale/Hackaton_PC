@@ -1,5 +1,4 @@
 import 'dart:async';
-// เพิ่มเพื่อใช้ Uint8List
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // สำหรับ rootBundle
 import 'package:audioplayers/audioplayers.dart'; // audioplayers
@@ -70,7 +69,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
       _isStartPhase = false;  // เปลี่ยนสถานะเป็นเฟสหายใจ
     });
      // เล่นเสียง Breathe In ทันทีหลังจาก Start
-    await Future.delayed(Duration(seconds: 1)); // เพิ่ม delay เพื่อให้เสียงเล่นต่อเนื่อง
+    await Future.delayed(Duration(seconds: 3)); // เพิ่ม delay เพื่อให้เสียงเล่นต่อเนื่อง
     await _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Breathe In
   
     _startBreathingCycle();  // เริ่มรอบหายใจ
