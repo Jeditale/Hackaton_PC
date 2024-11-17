@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nirva/Pages/Quiz/quiz_page.dart';
 import 'LoginAndRegister/Login.dart';
 import 'LoginAndRegister/SignUp.dart';
 
@@ -89,7 +90,7 @@ class WelcomeScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
-                          return SignUpScreen();
+                          return QuizPage();
                         },
                       ));
                     },

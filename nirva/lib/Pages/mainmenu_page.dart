@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:nirva/Pages/BreathAndMeditation.dart';
@@ -19,11 +21,44 @@ class _MainMenuState extends State<MainMenu> {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   int _currentIndex = 2; // Default to Main Menu (middle icon)
+  String? _userName; // To store the user's name
 
   @override
   void initState() {
     super.initState();
     _initializeNotifications();
+    _fetchUserName(); // Fetch user name from Firestore
+  }
+
+  // Fetch user's name from Firestore
+  void _fetchUserName() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final userData = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (userData.exists) {
+          setState(() {
+            _userName = userData['name']; // Update _userName with fetched name
+          });
+        } else {
+          setState(() {
+            _userName = 'User'; // Default fallback
+          });
+        }
+      } else {
+        setState(() {
+          _userName = 'User'; // Default fallback if no user is logged in
+        });
+      }
+    } catch (e) {
+      print('Error fetching user name: $e');
+      setState(() {
+        _userName = 'User'; // Fallback in case of an error
+      });
+    }
   }
 
   @override
@@ -108,7 +143,7 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                 ),
                 Text(
-                  'User!',
+                  _userName ?? 'Loading...', // Display user's name or loading indicator
                   style: TextStyle(
                     fontSize: 48,
                     fontWeight: FontWeight.bold,
@@ -139,7 +174,6 @@ class _MainMenuState extends State<MainMenu> {
                 _buildMainButton('Breathing', Icons.air),
                 _buildMainButton('Meditate', Icons.spa),
                 _buildMainButton('Progress', Icons.star),
-                // _buildMainButton('Quiz', Icons.question_answer),
               ],
             ),
           ),
@@ -152,7 +186,7 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
-  // Button Builder with custom size, background color and stroke
+  // Button Builder with custom size, background color, and stroke
   Widget _buildMainButton(String title, IconData icon) {
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
@@ -171,18 +205,13 @@ class _MainMenuState extends State<MainMenu> {
       ),
       onPressed: () {
         print('$title button pressed');
-        if(title == 'Breathing'){
+        if (title == 'Breathing') {
           Navigator.push(context, MaterialPageRoute(builder: (context) => BreathingScreen()));
-        }
-        else if(title == 'Meditate'){
+        } else if (title == 'Meditate') {
           Navigator.push(context, MaterialPageRoute(builder: (context) => MeditationScreen()));
-        }
-        else if(title == 'Progress'){
+        } else if (title == 'Progress') {
           Navigator.push(context, MaterialPageRoute(builder: (context) => ProgressPageApp()));
         }
-        // else if('$title' == 'Quiz'){
-        //   Navigator.push(context, MaterialPageRoute(builder: (context) => QuizPage()));
-        // }
       },
     );
   }

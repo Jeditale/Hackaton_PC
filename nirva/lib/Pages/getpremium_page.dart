@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nirva/Pages/welcome.dart';
 import 'package:nirva/pages/Quiz/quiz_page.dart';
 
 class GetPremiumPage extends StatefulWidget {
@@ -30,7 +31,7 @@ class _GetPremiumPageState extends State<GetPremiumPage> {
                 child: IconButton(
                   icon: Icon(Icons.close, color: Color(0xFF24446D), size: 30),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => QuizPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
                   },
                 ),
               ),

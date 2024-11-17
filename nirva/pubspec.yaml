@@ -24,6 +24,7 @@ dependencies:
   cloud_firestore: ^5.5.0
   video_player: ^2.9.2
   audioplayers: ^6.1.0
+  firebase_auth: ^5.3.3
 
 dev_dependencies:
   flutter_test:

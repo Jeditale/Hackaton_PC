@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nirva/Pages/LoginAndRegister/SignUp.dart';
 import 'package:nirva/Pages/welcome.dart';
 // Import your MainMenu page if not already imported
 
@@ -111,7 +112,7 @@ class ResultPage extends StatelessWidget {
                     // Navigate to the MainMenu page
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => WelcomeScreen()), 
+                      MaterialPageRoute(builder: (context) => SignUpScreen()), 
                     );
                   },
                   style: ElevatedButton.styleFrom(

@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nirva/Pages/BreathAndMeditation.dart';
 import 'package:nirva/Pages/Reminder/reminder_page.dart';
 import 'package:nirva/Pages/mainmenu_page.dart';
 import 'package:nirva/hotbar/hotbar_navigation.dart';
 import 'package:nirva/pages/progress.dart';
+
 
 class ShopPage extends StatefulWidget {
   @override
@@ -32,14 +34,14 @@ class _ShopPageState extends State<ShopPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+ Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           // Background Image
           Positioned.fill(
             child: Image.asset(
-              'assets/image/Bg.png', // Replace with your image path
+              'assets/image/Bg.png', // Replace with your background image path
               fit: BoxFit.cover,
             ),
           ),
@@ -49,24 +51,32 @@ class _ShopPageState extends State<ShopPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 40), // Space for the status bar
+                SizedBox(height: 40),
                 Text(
                   'Voice',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 10),
-                ProductCard(
-                  imageUrl: 'assets/image/peter_voice.png',
-                  title: 'The Art of Breathing',
-                  description:
-                      'Peter\'s soothing voice and calming music will guide you through a series of breathing exercises to help reduce anxiety and stress.',
-                  price: 200,
+            SizedBox(height: 10),
+            StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('nirva-voice')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    return Column(
+                      children: snapshot.data!.docs.map((doc) {
+                        return ProductCard(documentSnapshot: doc);
+                      }).toList(),
+                    );
+                  },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 40), // Space for the status bar
                 Text(
                   'Tracks',
                   style: TextStyle(
@@ -76,54 +86,52 @@ class _ShopPageState extends State<ShopPage> {
                   ),
                 ),
                 SizedBox(height: 10),
-                ProductCard(
-                  imageUrl: 'assets/image/soothing_rain.png',
-                  title: 'Soothing Rain',
-                  description:
-                      'Relaxing sounds of rain, great for meditation and falling asleep.',
-                  price: 30,
-                ),
-                ProductCard(
-                  imageUrl: 'assets/image/breath_of_life.png',
-                  title: 'Breath of Life',
-                  description: 'Guided meditation for beginners.',
-                  price: 40,
-                ),
-                ProductCard(
-                  imageUrl: 'assets/image/calm_ocean.png',
-                  title: 'Calm Ocean',
-                  description:
-                      'The sound of waves hitting the shore is perfect for relaxation and sleep.',
-                  price: 50,
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('nirva-shop')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    return Column(
+                      children: snapshot.data!.docs.map((doc) {
+                        return ProductCard(documentSnapshot: doc);
+                      }).toList(),
+                    );
+                  },
                 ),
               ],
             ),
           ),
         ],
       ),
-      bottomNavigationBar: HotbarNavigation(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-      ),
     );
   }
 }
 
-class ProductCard extends StatelessWidget {
-  final String imageUrl;
-  final String title;
-  final String description;
-  final int price;
+class ProductCard extends StatefulWidget {
+  final DocumentSnapshot documentSnapshot;
 
-  ProductCard({
-    required this.imageUrl,
-    required this.title,
-    required this.description,
-    required this.price,
-  });
+  ProductCard({required this.documentSnapshot});
+
+  @override
+  _ProductCardState createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  bool isOwned = false; // Track if the product has been purchased
 
   @override
   Widget build(BuildContext context) {
+    final data = widget.documentSnapshot.data() as Map<String, dynamic>;
+
+    final String name = data['name'] ?? 'No Name';
+    final String description = data['description'] ?? 'No Description';
+    final int price = data['price'] ?? 0;
+    final String imageUrl = data['imageURL'] ?? 'assets/image/peter_voice.png';
+
     return Card(
       color: Colors.white.withOpacity(0.9), // Semi-transparent card background
       shape: RoundedRectangleBorder(
@@ -133,13 +141,13 @@ class ProductCard extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: Row(
           children: [
-            SizedBox(width: 16),
+            // Expanded widget with text and button on the left side
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    name,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -155,23 +163,25 @@ class ProductCard extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: isOwned
+                        ? null // Disable button if owned
+                        : () {
+                            setState(() {
+                              isOwned = true; // Update state to "owned"
+                            });
+                          },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(100, 173, 228, 100),
+                      backgroundColor: isOwned ? Colors.grey : Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: Text(
-                      'Buy $price',
-                      style: TextStyle(
-                        color: const Color.fromRGBO(18, 23, 23, 100),
-                      ),
-                    ),
+                    child: Text(isOwned ? 'Owned' : 'Buy $price'),
                   ),
                 ],
               ),
             ),
+            // Placeholder for product image (can be added later if image URLs are stored)
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.asset(
