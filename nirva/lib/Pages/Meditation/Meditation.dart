@@ -12,6 +12,7 @@ class MeditationScreen extends StatefulWidget {
 class _BreathingScreenState extends State<MeditationScreen> {
   String selectedBreathingPattern = 'Background Music';
   String selectedVoice = 'Voice';
+  int selectedTime = 1; // เวลาเริ่มต้น
 
   Future<void> updateMedCount(String userId) async {
     try {
@@ -67,151 +68,47 @@ class _BreathingScreenState extends State<MeditationScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Circular counter display
-              Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(width: 2),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '1 MIN',
-                        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+              GestureDetector(
+                onTap: () {
+                  _showTimePicker();
+                },
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.4),
+                    border: Border.all(width: 2, color: Colors.black12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '$selectedTime MIN',
+                      style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),
               SizedBox(height: 20),
-
-              // Background Music button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: PopupMenuButton<String>(
-                  onSelected: (value) {
-                    setState(() {
-                      selectedBreathingPattern = value;
-                    });
-                  },
-                  itemBuilder: (BuildContext context) => [
-                    PopupMenuItem(
-                      value: 'Mountain',
-                      child: Text('Mountain', style: TextStyle(fontSize: 20)),
-                    ),
-                    PopupMenuItem(
-                      value: 'Low-fi Music',
-                      child: Text('Low-fi Music', style: TextStyle(fontSize: 20)),
-                    ),
-                  ],
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 30),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        selectedBreathingPattern,
-                        style: TextStyle(fontSize: 25),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              _buildMusicSelector(),
 
               SizedBox(height: 10),
-
-              // Voice button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: PopupMenuButton<String>(
-                  onSelected: (value) {
-                    setState(() {
-                      selectedVoice = value;
-                    });
-                  },
-                  itemBuilder: (BuildContext context) => [
-                    PopupMenuItem(
-                      value: 'Eric',
-                      child: Text('Eric', style: TextStyle(fontSize: 20)),
-                    ),
-                    PopupMenuItem(
-                      value: 'Sarah',
-                      child: Text('Sarah', style: TextStyle(fontSize: 20)),
-                    ),
-                  ],
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 30),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        selectedVoice,
-                        style: TextStyle(fontSize: 25),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 10),
-
-              // Vibration toggle
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  children: [
-                    Checkbox(
-                      value: false,
-                      onChanged: (bool? value) {},
-                    ),
-                    Text('Mute when finish', style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-              ),
+              _buildVoiceSelector(),
 
               SizedBox(height: 20),
-
-              // Start button
+              
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ElevatedButton(
-                  onPressed: () async {
-                    final user = FirebaseAuth.instance.currentUser;
-
-                    if (user != null) {
-                      await updateMedCount(user.uid);
-                    } else {
-                      print('User not logged in!');
-                    }
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return MeditationstartScreen();
-                      },
-                    ));
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MeditationstartScreen(
+                          selectedTime: selectedTime,
+                          selectedBreathingPattern: selectedBreathingPattern,
+                        ),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 15),
@@ -231,6 +128,125 @@ class _BreathingScreenState extends State<MeditationScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMusicSelector() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: PopupMenuButton<String>(
+        onSelected: (value) {
+          setState(() {
+            selectedBreathingPattern = value;
+          });
+        },
+        itemBuilder: (BuildContext context) => [
+          PopupMenuItem(
+            value: 'Mountain',
+            child: Text('Mountain', style: TextStyle(fontSize: 25)),
+          ),
+          PopupMenuItem(
+            value: 'Low-fi Music',
+            child: Text('Low-fi Music', style: TextStyle(fontSize: 25)),
+          ),
+        ],
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 30),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              selectedBreathingPattern,
+              style: TextStyle(fontSize: 25),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVoiceSelector() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: PopupMenuButton<String>(
+        onSelected: (value) {
+          setState(() {
+            selectedVoice = value;
+          });
+        },
+        itemBuilder: (BuildContext context) => [
+          PopupMenuItem(
+            value: 'Eric',
+            child: Text('Eric', style: TextStyle(fontSize: 25)),
+          ),
+          PopupMenuItem(
+            value: 'Sarah',
+            child: Text('Sarah', style: TextStyle(fontSize: 25)),
+          ),
+        ],
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 30),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              selectedVoice,
+              style: TextStyle(fontSize: 25),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showTimePicker() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Select Time'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButton<int>(
+                value: selectedTime,
+                items: [1, 5, 10, 15, 20]
+                    .map((time) => DropdownMenuItem(
+                          value: time,
+                          child: Text('$time MIN', style: TextStyle(fontSize: 25),),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedTime = value!;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
