@@ -48,7 +48,7 @@ class ProgressPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Text
+                      Text(
                         'Average time',
                         style: TextStyle(
                           fontSize: 18,

@@ -115,7 +115,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/sound/background2.png'), // เพิ่มภาพพื้นหลังเมฆ
+            image: AssetImage('assets/image/background2.png'), // เพิ่มภาพพื้นหลังเมฆ
             fit: BoxFit.cover,
           ),
         ),

@@ -7,6 +7,7 @@ import 'pages/mainmenu_page.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,7 @@ void main() async {
 
   // Request notification permissions for Android 13+
   await requestNotificationPermissions();
+  await Firebase.initializeApp();
 
   runApp(MyApp()); // Wrap with MaterialApp here
 }
