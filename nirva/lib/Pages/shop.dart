@@ -5,7 +5,6 @@ import 'package:nirva/Pages/Reminder/reminder_page.dart';
 import 'package:nirva/Pages/mainmenu_page.dart';
 import 'package:nirva/hotbar/hotbar_navigation.dart';
 import 'package:nirva/pages/progress.dart';
-import 'package:nirva/Pages/profile.dart';
 
 class ShopPage extends StatefulWidget {
   @override
@@ -51,22 +50,6 @@ class _ShopPageState extends State<ShopPage> {
             child: Image.asset(
               'assets/image/Bg.png', // Replace with your background image path
               fit: BoxFit.cover,
-            ),
-          ),
-          Positioned(
-            top: 40,
-            left: 20,
-            child: IconButton(
-              icon: CircleAvatar(
-                radius: 25,
-                backgroundImage: AssetImage('assets/image/Profile.png'),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-              },
             ),
           ),
           // Page Content
