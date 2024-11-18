@@ -270,7 +270,11 @@ class _BreathingScreenState extends State<BreathingScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final user = FirebaseAuth.instance.currentUser;
+                    if (user != null) {
+                      await updateBreathCount(user.uid);
+                    }
                     if (selectedBreathingPattern == 'Breathing Pattern') {
                       // ถ้ายังไม่ได้เลือก Breathing Pattern จะแสดง SnackBar
                       ScaffoldMessenger.of(context).showSnackBar(
