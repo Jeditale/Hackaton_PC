@@ -15,8 +15,8 @@ class ShopPage extends StatefulWidget {
 class _ShopPageState extends State<ShopPage> {
   int _currentIndex = 3; // Default to ShopPage index in hotbar
   final Set<String> ownedProducts = {}; // Track owned product IDs
-  late String userId; // Store the current user's ID
-  bool isPremium = false; // Track premium status
+  late String userId;
+  bool isPremium = false;
 
   @override
   void initState() {
@@ -24,8 +24,6 @@ class _ShopPageState extends State<ShopPage> {
     fetchOwnedItems(); // Fetch owned items when the page loads
   }
 
-  // Fetch owned items and premium status from Firestore
-// Fetch owned items and premium status from Firestore
 Future<void> fetchOwnedItems() async {
   try {
     final user = FirebaseAuth.instance.currentUser; // Get the current user
@@ -39,7 +37,6 @@ Future<void> fetchOwnedItems() async {
       final List<dynamic> items = userDoc.data()?['itemOwned'] ?? [];
       final bool premiumStatus = userDoc.data()?['premium'] ?? false;
 
-      // If the user is premium, fetch all product IDs and update Firestore
       if (premiumStatus) {
         final nirvaVoiceDocs = await FirebaseFirestore.instance
             .collection('nirva-voice')
@@ -53,7 +50,6 @@ Future<void> fetchOwnedItems() async {
           ...nirvaShopDocs.docs.map((doc) => doc.id),
         ];
 
-        // Update the user's Firestore document if necessary
         if (!items.contains(allProductIds)) {
           await FirebaseFirestore.instance
               .collection('users')
