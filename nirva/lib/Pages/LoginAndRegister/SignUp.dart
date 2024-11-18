@@ -38,6 +38,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           'email': _emailController.text.trim(),
           'breathCount': 0,
           'meditateCount': 0,
+          'premium':false
         });
 
         ScaffoldMessenger.of(context).showSnackBar(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nirva/Pages/BreathAndMeditation.dart';
 import 'package:nirva/Pages/Reminder/reminder_page.dart';
 import 'package:nirva/Pages/mainmenu_page.dart';
+import 'package:nirva/Pages/profile.dart';
 import 'package:nirva/Pages/shop.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:nirva/hotbar/hotbar_navigation.dart'; // Ensure this is the correct import for your project
@@ -59,7 +60,9 @@ class _ProgressPageState extends State<ProgressPage> {
           icon: CircleAvatar(
             backgroundImage: AssetImage('assets/image/Profile.png'), // Replace with your profile image path
           ),
-          onPressed: () {}, // Add navigation for profile if necessary
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+          }, // Add navigation for profile if necessary
         ),
       ),
       body: Container(

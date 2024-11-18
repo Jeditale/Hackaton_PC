@@ -5,6 +5,7 @@ import 'package:nirva/Pages/Reminder/reminder_page.dart';
 import 'package:nirva/Pages/mainmenu_page.dart';
 import 'package:nirva/hotbar/hotbar_navigation.dart';
 import 'package:nirva/pages/progress.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ShopPage extends StatefulWidget {
   @override
@@ -14,6 +15,34 @@ class ShopPage extends StatefulWidget {
 class _ShopPageState extends State<ShopPage> {
   int _currentIndex = 3; // Default to ShopPage index in hotbar
   final Set<String> ownedProducts = {}; // Track owned product IDs
+  late String userId; // Store the current user's ID
+
+  @override
+  void initState() {
+    super.initState();
+    fetchOwnedItems(); // Fetch owned items when the page loads
+  }
+
+  // Fetch owned items from Firestore
+  Future<void> fetchOwnedItems() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser; // Get the current user
+      if (user != null) {
+        userId = user.uid; // Store the user's ID
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get();
+
+        final List<dynamic> items = userDoc.data()?['itemOwned'] ?? [];
+        setState(() {
+          ownedProducts.addAll(items.cast<String>());
+        });
+      }
+    } catch (e) {
+      print('Error fetching owned items: $e');
+    }
+  }
 
   // Handle hotbar navigation
   void _onTabTapped(int index) {
@@ -34,10 +63,17 @@ class _ShopPageState extends State<ShopPage> {
   }
 
   // Handle product purchase
-  void _handlePurchase(String productId) {
-    setState(() {
-      ownedProducts.add(productId); // Mark product as owned
-    });
+  Future<void> _handlePurchase(String productId) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'itemOwned': FieldValue.arrayUnion([productId]),
+      });
+      setState(() {
+        ownedProducts.add(productId); // Mark product as owned locally
+      });
+    } catch (e) {
+      print('Error purchasing product: $e');
+    }
   }
 
   @override

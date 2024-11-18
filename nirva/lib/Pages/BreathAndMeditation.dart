@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:nirva/Pages/mainmenu_page.dart';
+import 'package:nirva/Pages/profile.dart';
 import 'package:nirva/Pages/progress.dart';
 import 'package:nirva/Pages/shop.dart';
 import 'package:nirva/pages/Reminder/reminder_page.dart';
@@ -108,9 +109,11 @@ class _BreathAndMeditationScreenState extends State<BreathAndMeditationScreen> {
         elevation: 0,
         leading: IconButton(
           icon: CircleAvatar(
-            backgroundImage: AssetImage("assets/image/profile.jpg"), // path to profile image
+            backgroundImage: AssetImage('assets/image/Profile.png'), // Replace with your profile image path
           ),
-          onPressed: () {}, // Add navigation for profile if necessary
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+          }, // Add navigation for profile if necessary
         ),
       ),
       body: Container(
