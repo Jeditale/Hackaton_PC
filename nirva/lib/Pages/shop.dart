@@ -6,7 +6,6 @@ import 'package:nirva/Pages/mainmenu_page.dart';
 import 'package:nirva/hotbar/hotbar_navigation.dart';
 import 'package:nirva/pages/progress.dart';
 
-
 class ShopPage extends StatefulWidget {
   @override
   _ShopPageState createState() => _ShopPageState();
@@ -123,10 +122,14 @@ class _ShopPageState extends State<ShopPage> {
           ),
         ],
       ),
+      // Add the Hotbar Navigation here (copied from MainMenu)
+      bottomNavigationBar: HotbarNavigation(
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
+      ),
     );
   }
 }
-
 
 class ProductCard extends StatelessWidget {
   final DocumentSnapshot documentSnapshot;
