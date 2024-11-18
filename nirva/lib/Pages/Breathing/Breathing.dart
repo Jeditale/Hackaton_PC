@@ -272,9 +272,6 @@ class _BreathingScreenState extends State<BreathingScreen> {
                 child: ElevatedButton(
                   onPressed: () async {
                     final user = FirebaseAuth.instance.currentUser;
-                    if (user != null) {
-                      await updateBreathCount(user.uid);
-                    }
                     if (selectedBreathingPattern == 'Breathing Pattern') {
                       // ถ้ายังไม่ได้เลือก Breathing Pattern จะแสดง SnackBar
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -283,6 +280,9 @@ class _BreathingScreenState extends State<BreathingScreen> {
                         ),
                       );
                     } else {
+                      if (user != null) {
+                      await updateBreathCount(user.uid);
+                    }
                       // ถ้าเลือกแล้วก็ไปที่หน้า BreathingstartScreen
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
