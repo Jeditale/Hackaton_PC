@@ -99,7 +99,14 @@ class _BreathingScreenState extends State<MeditationScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final user =FirebaseAuth.instance.currentUser;
+
+                    if (user != null){
+                      await updateMedCount(user.uid);
+                    } else {
+                      print('User not logged in');
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
