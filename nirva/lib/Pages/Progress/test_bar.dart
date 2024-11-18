@@ -56,7 +56,7 @@ class _MyBarState extends State<MyBarTotal> {
         ),
         child: Center(
           child: SizedBox(
-            height: 400,
+            height: 250,
             child: MyBarChart(
               weeklySummary: weeklySummary,
             ),
@@ -127,7 +127,8 @@ class MyBarChart extends StatelessWidget {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              getTitlesWidget: getButtomTitles
+              getTitlesWidget: getButtomTitles,
+              reservedSize: 40, // Add space for the titles
               ),
             ),
         ),
