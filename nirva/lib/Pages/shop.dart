@@ -16,6 +16,7 @@ class _ShopPageState extends State<ShopPage> {
   int _currentIndex = 3; // Default to ShopPage index in hotbar
   final Set<String> ownedProducts = {}; // Track owned product IDs
   late String userId; // Store the current user's ID
+  bool isPremium = false; // Track premium status
 
   @override
   void initState() {
@@ -23,26 +24,60 @@ class _ShopPageState extends State<ShopPage> {
     fetchOwnedItems(); // Fetch owned items when the page loads
   }
 
-  // Fetch owned items from Firestore
-  Future<void> fetchOwnedItems() async {
-    try {
-      final user = FirebaseAuth.instance.currentUser; // Get the current user
-      if (user != null) {
-        userId = user.uid; // Store the user's ID
-        final userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
+  // Fetch owned items and premium status from Firestore
+// Fetch owned items and premium status from Firestore
+Future<void> fetchOwnedItems() async {
+  try {
+    final user = FirebaseAuth.instance.currentUser; // Get the current user
+    if (user != null) {
+      userId = user.uid; // Store the user's ID
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      final List<dynamic> items = userDoc.data()?['itemOwned'] ?? [];
+      final bool premiumStatus = userDoc.data()?['premium'] ?? false;
+
+      // If the user is premium, fetch all product IDs and update Firestore
+      if (premiumStatus) {
+        final nirvaVoiceDocs = await FirebaseFirestore.instance
+            .collection('nirva-voice')
+            .get();
+        final nirvaShopDocs = await FirebaseFirestore.instance
+            .collection('nirva-shop')
             .get();
 
-        final List<dynamic> items = userDoc.data()?['itemOwned'] ?? [];
+        final allProductIds = [
+          ...nirvaVoiceDocs.docs.map((doc) => doc.id),
+          ...nirvaShopDocs.docs.map((doc) => doc.id),
+        ];
+
+        // Update the user's Firestore document if necessary
+        if (!items.contains(allProductIds)) {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .update({'itemOwned': allProductIds});
+        }
+
+        setState(() {
+          ownedProducts.addAll(allProductIds);
+          isPremium = true; // Set premium status
+        });
+      } else {
+        // Non-premium users
         setState(() {
           ownedProducts.addAll(items.cast<String>());
+          isPremium = false; // Update premium status
         });
       }
-    } catch (e) {
-      print('Error fetching owned items: $e');
     }
+  } catch (e) {
+    print('Error fetching owned items: $e');
   }
+}
+
 
   // Handle hotbar navigation
   void _onTabTapped(int index) {
@@ -116,7 +151,7 @@ class _ShopPageState extends State<ShopPage> {
                       children: snapshot.data!.docs.map((doc) {
                         return ProductCard(
                           documentSnapshot: doc,
-                          isOwned: ownedProducts.contains(doc.id),
+                          isOwned: isPremium || ownedProducts.contains(doc.id),
                           onBuy: () => _handlePurchase(doc.id),
                         );
                       }).toList(),
@@ -146,7 +181,7 @@ class _ShopPageState extends State<ShopPage> {
                       children: snapshot.data!.docs.map((doc) {
                         return ProductCard(
                           documentSnapshot: doc,
-                          isOwned: ownedProducts.contains(doc.id),
+                          isOwned: isPremium || ownedProducts.contains(doc.id),
                           onBuy: () => _handlePurchase(doc.id),
                         );
                       }).toList(),
@@ -169,7 +204,7 @@ class _ShopPageState extends State<ShopPage> {
 
 class ProductCard extends StatelessWidget {
   final DocumentSnapshot documentSnapshot;
-  final bool isOwned; // Indicates if the product is owned
+  final bool isOwned; // Indicates if the product is owned or premium
   final VoidCallback onBuy; // Callback for the Buy button
 
   ProductCard({
@@ -218,7 +253,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: isOwned ? null : onBuy, // Disable if owned
+                    onPressed: isOwned ? null : onBuy, // Disable if owned or premium
                     style: ElevatedButton.styleFrom(
                       backgroundColor: isOwned ? Colors.grey : Colors.blue,
                       shape: RoundedRectangleBorder(
