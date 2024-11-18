@@ -15,9 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  bool _isLoading = false; // To indicate loading state
+  bool _isLoading = false;
 
-  // Function to display error messages
   void _showError(String errorMessage) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -33,19 +32,15 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = true;
       });
       try {
-        // Firebase login
         await _auth.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-
-        // Navigate to Main Menu on success
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainMenu()),
         );
       } on FirebaseAuthException catch (e) {
-        // Handle Firebase authentication errors
         if (e.code == 'user-not-found') {
           _showError('No user found for this email.');
         } else if (e.code == 'wrong-password') {
@@ -68,81 +63,161 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Login",
-          style: TextStyle(fontSize: 30),
-        ),
-        backgroundColor: const Color.fromARGB(255, 184, 231, 255),
-      ),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("E-mail", style: TextStyle(fontSize: 30)),
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your email',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email.';
-                    }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return 'Please enter a valid email.';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                Text("Password", style: TextStyle(fontSize: 30)),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your password',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password.';
-                    }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters long.';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                _isLoading
-                    ? Center(child: CircularProgressIndicator()) // Show loader during login
-                    : SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _login,
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            backgroundColor: Colors.black,
-                            minimumSize: Size(double.infinity, 30),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                          ),
-                          child: Text(
-                            "Login",
-                            style: TextStyle(fontSize: 30, color: Colors.white),
-                          ),
-                        ),
-                      ),
-              ],
+      body: Stack(
+        children: [
+          // Background Image
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/image/Bg.png'),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
+
+          // Login Title Outside White Box
+          Positioned(
+            top: 90, // Adjusted lower
+            left: 20,
+            child: Text(
+              "Login",
+              style: TextStyle(
+                fontSize: 36, // Larger font size
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF24446D),
+              ),
+            ),
+          ),
+
+          // White container for form
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.8,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 40),
+
+                      // Email Label
+                      Text(
+                        "E-mail",
+                        style: TextStyle(
+                          fontSize: 28, // Larger text
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF24446D),
+                        ),
+                      ),
+                      // Email Input
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        style: TextStyle(fontSize: 20), // Larger input text
+                        decoration: InputDecoration(
+                          hintText: 'Enter your email',
+                          hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFF24446D)),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email.';
+                          }
+                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                            return 'Please enter a valid email.';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 40),
+
+                      // Password Label
+                      Text(
+                        "Password",
+                        style: TextStyle(
+                          fontSize: 28, // Larger text
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF24446D),
+                        ),
+                      ),
+                      // Password Input
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        style: TextStyle(fontSize: 20), // Larger input text
+                        decoration: InputDecoration(
+                          hintText: 'Enter your password',
+                          hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFF24446D)),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password.';
+                          }
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters long.';
+                          }
+                          return null;
+                        },
+                      ),
+                      Spacer(), // Push Login button to the bottom
+
+                      // Login Button
+                      _isLoading
+                          ? Center(child: CircularProgressIndicator())
+                          : Center(
+                              child: SizedBox(
+                                width: 360,
+                                height: 73,
+                                child: ElevatedButton(
+                                  onPressed: _login,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Login",
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                      SizedBox(height: 20), // Padding below button
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

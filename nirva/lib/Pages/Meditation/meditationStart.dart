@@ -37,15 +37,15 @@ class _MeditationstartScreenState extends State<MeditationstartScreen> {
     String audioPath;
 
     if (widget.selectedBreathingPattern == 'Mountain') {
-      audioPath = 'assets/sound/mountain.mp3';
+      audioPath = 'sound/mountain.mp3';
     } else if (widget.selectedBreathingPattern == 'Low-fi Music') {
-      audioPath = 'assets/sound/soundlowfi.mp3';
+      audioPath = 'sound/soundlowfi.mp3';
     } else {
       return;
     }
 
     await _audioCache.load(audioPath); // โหลดไฟล์เสียงล่วงหน้า
-    _audioPlayer.play(AssetSource(audioPath), volume: 1.0);
+    _audioPlayer.play(AssetSource(audioPath), volume: 100.0);
     _audioPlayer.setReleaseMode(ReleaseMode.loop);
   }
 
@@ -62,6 +62,7 @@ class _MeditationstartScreenState extends State<MeditationstartScreen> {
       } else if (timeLeft == 0) {
         _timer.cancel();
         _stopMusic();
+        
       }
     });
   }
@@ -153,9 +154,12 @@ class _MeditationstartScreenState extends State<MeditationstartScreen> {
                 
                 ElevatedButton(
                   onPressed: () {
+                    _stopMusic();
                     Navigator.push(
+                      
                       context,
                       MaterialPageRoute(builder: (context) => MeditationScreen()),
+                      
                     );
                   },
                   style: ElevatedButton.styleFrom(

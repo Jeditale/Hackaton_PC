@@ -104,6 +104,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
             _timer.cancel();
             _breatheText = 'FINISH';
             _playSound('assets/sound/finish.mp3'); // เล่นเสียง Finish
+            
           }
         }
       });

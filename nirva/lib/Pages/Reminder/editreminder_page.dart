@@ -235,26 +235,7 @@ class _EditReminderPageState extends State<EditReminderPage> {
                       }).toList(),
                     ),
                     SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Text('Select Sound: '),
-                        DropdownButton<String>(
-                          value: _notificationSound,
-                          onChanged: (String? newValue) {
-                            if (newValue != null) {
-                              _selectSound(newValue);
-                            }
-                          },
-                          items: ['default', 'Frog', 'Wahh']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
+                    
                   ],
                 ),
               ),
