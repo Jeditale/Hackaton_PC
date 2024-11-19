@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:nirva/pages/getpremium_page.dart';
+import 'package:nirva/Pages/welcome.dart';
 import 'package:nirva/services/notification_services.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // Optional: Hide the debug banner
-      home: GetPremiumPage(), 
+      home: WelcomeScreen(), 
     );
   }
 }

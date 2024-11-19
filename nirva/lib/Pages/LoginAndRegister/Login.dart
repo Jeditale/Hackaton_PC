@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nirva/Pages/mainmenu_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nirva/pages/getpremium_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -31,16 +33,44 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _isLoading = true;
       });
+
       try {
-        await _auth.signInWithEmailAndPassword(
+        // Sign in with email and password
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainMenu()),
-        );
+
+        // Fetch the user's Firestore document
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .get();
+
+        if (userDoc.exists) {
+          final userData = userDoc.data() as Map<String, dynamic>;
+
+          // Check the premium field
+          bool isPremium = userData['premium'] ?? false;
+
+          if (isPremium) {
+            // Navigate to MainMenu if the user is premium
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MainMenu()),
+            );
+          } else {
+            // Navigate to GetPremiumPage if the user is not premium
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => GetPremiumPage()),
+            );
+          }
+        } else {
+          _showError('User data not found in Firestore.');
+        }
       } on FirebaseAuthException catch (e) {
+        // Handle Firebase authentication errors
         if (e.code == 'user-not-found') {
           _showError('No user found for this email.');
         } else if (e.code == 'wrong-password') {
@@ -51,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
           _showError('Login failed. Please try again.');
         }
       } catch (e) {
+        // Handle other errors
         _showError('An unexpected error occurred. Please try again.');
       } finally {
         setState(() {
@@ -59,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

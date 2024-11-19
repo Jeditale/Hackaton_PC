@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nirva/Pages/welcome.dart';
 import 'package:nirva/pages/Quiz/quiz_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nirva/Pages/mainmenu_page.dart';
 
 class GetPremiumPage extends StatefulWidget {
   @override
@@ -9,6 +12,35 @@ class GetPremiumPage extends StatefulWidget {
 
 class _GetPremiumPageState extends State<GetPremiumPage> {
   String selectedChoice = ''; // Track the selected choice ("Annual" or "Monthly")
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> _activatePremium() async {
+    try {
+      // Get the current user's UID
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception("No user logged in.");
+      }
+
+      // Update the 'premium' field to true in Firestore
+      await _firestore.collection('users').doc(user.uid).update({'premium': true});
+
+      // Navigate to MainMenu
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainMenu()),
+      );
+    } catch (e) {
+      // Handle any errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +63,15 @@ class _GetPremiumPageState extends State<GetPremiumPage> {
                 child: IconButton(
                   icon: Icon(Icons.close, color: Color(0xFF24446D), size: 30),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
+                    // Navigate to MainMenu without updating Firestore
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainMenu()),
+                    );
                   },
                 ),
               ),
-              
+
               SizedBox(height: 20),
 
               // Centered content
@@ -192,9 +228,7 @@ class _GetPremiumPageState extends State<GetPremiumPage> {
                   width: 350,
                   height: 46,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomeScreen())); // Navigate to main page for now
-                    },
+                    onPressed: _activatePremium, // Call the function to activate premium
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF24446D),
                       shape: RoundedRectangleBorder(

@@ -20,17 +20,17 @@ class MainMenu extends StatefulWidget {
 class _MainMenuState extends State<MainMenu> {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  int _currentIndex = 2; // Default to Main Menu (middle icon)
-  String? _userName; // To store the user's name
+  int _currentIndex = 2;
+  String? _userName; 
+  bool _isPremium = false;
 
   @override
   void initState() {
     super.initState();
     _initializeNotifications();
-    _fetchUserName(); // Fetch user name from Firestore
+    _fetchUserName();
   }
 
-  // Fetch user's name from Firestore
   void _fetchUserName() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -41,22 +41,26 @@ class _MainMenuState extends State<MainMenu> {
             .get();
         if (userData.exists) {
           setState(() {
-            _userName = userData['name']; // Update _userName with fetched name
+            _userName = userData['name'];
+            _isPremium = userData['premium'] ?? false;
           });
         } else {
           setState(() {
             _userName = 'User'; // Default fallback
+            _isPremium = false;
           });
         }
       } else {
         setState(() {
           _userName = 'User'; // Default fallback if no user is logged in
+          _isPremium = false;
         });
       }
     } catch (e) {
-      print('Error fetching user name: $e');
+      print('Error fetching user data: $e');
       setState(() {
         _userName = 'User'; // Fallback in case of an error
+        _isPremium = false; 
       });
     }
   }
@@ -109,21 +113,46 @@ class _MainMenuState extends State<MainMenu> {
               fit: BoxFit.cover, // Ensure it covers the entire screen
             ),
           ),
-          // Profile Icon
+          // Profile Icon with premium status
           Positioned(
             top: 40,
             left: 20,
-            child: IconButton(
-              icon: CircleAvatar(
-                radius: 25,
-                backgroundImage: AssetImage('assets/image/Profile.png'),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-              },
+            child: Row(
+              children: [
+                IconButton(
+                  icon: CircleAvatar(
+                    radius: 25,
+                    backgroundImage: AssetImage('assets/image/Profile.png'),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()),
+                    );
+                  },
+                ),
+                SizedBox(width: 10),
+                if (_isPremium)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFB6D3F3),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Color(0xFF297884),
+                        width: 2,
+                      ),
+                    ),
+                    child: Text(
+                      'Premium',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF297884),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           // Greeting Text
