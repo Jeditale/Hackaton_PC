@@ -158,7 +158,6 @@ class _MeditationstartScreenState extends State<MeditationstartScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       _stopMusic();
-                      _stopMusic();
                       Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return MeditationScreen();

@@ -243,7 +243,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
                     ),
                   ),
                   child: Text(
-                    'STOP',
+                    'Stop',
                     style: TextStyle(
                       fontSize: 25,
                       color: Colors.white, // สีข้อความของปุ่ม
