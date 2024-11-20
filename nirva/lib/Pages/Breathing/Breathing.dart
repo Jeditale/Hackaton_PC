@@ -254,7 +254,9 @@ class _BreathingScreenState extends State<BreathingScreen> {
                 child: ElevatedButton(
                   onPressed: (selectedBreathingPattern != 'Breathing Pattern' &&
                               selectedVoice != 'Voice')
-                      ? () {
+                      ? () async {
+                        final user = FirebaseAuth.instance.currentUser;
+                        await updateBreathCount(user!.uid);
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
                               return BreathingstartScreen(
