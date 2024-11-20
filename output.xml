@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.1 (Python 3.12.7 on win32)" generated="2024-11-20T19:50:26.379983" rpa="false" schemaversion="5">
+<suite id="s1" name="Hackaton PC" source="E:\Hackaton\Hackaton_PC">
+<suite id="s1-s1" name="Automated Tester" source="E:\Hackaton\Hackaton_PC\automated_tester">
+<suite id="s1-s1-s1" name="Login" source="E:\Hackaton\Hackaton_PC\automated_tester\Login.robot">
+<test id="s1-s1-s1-t1" name="Login" line="7">
+<kw name="Open Application" owner="AppiumLibrary">
+<arg>http://127.0.0.1:4723</arg>
+<arg>appium:platformName=android</arg>
+<arg>appium:automationName=uiautomator2</arg>
+<arg>appium:deviceName=emulator-5554</arg>
+<arg>appium:platformVersion=12</arg>
+<arg>appium:app=E:/Hackaton/Hackaton_PC/automated_tester/Apk/nirva.apk</arg>
+<arg>appium:newCommandTimeout=${3600}</arg>
+<arg>appium:connectHardwareKeyboard=${True}</arg>
+<doc>Opens a new application to given Appium server.
+Capabilities of appium server, Android and iOS,
+Please check https://appium.io/docs/en/2.1/cli/args/
+| *Option*            | *Man.* | *Description*     |
+| remote_url          | Yes    | Appium server url |
+| alias               | no     | alias             |
+| strict_ssl          | No     | allows you to send commands to an invalid certificate host like a self-signed one. |</doc>
+<status status="PASS" start="2024-11-20T19:50:26.733585" elapsed="16.152395"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Login</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-20T19:50:42.886984" elapsed="0.375087"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:50:43.268075" level="INFO">${el1} = accessibility_id=Login</msg>
+<var>${el1}</var>
+<arg>accessibility_id=Login</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:50:43.266071" elapsed="0.002004"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:50:43.273073" level="INFO">Clicking element 'accessibility_id=Login'.</msg>
+<arg>${el1}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:50:43.270084" elapsed="0.258102"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>android=new UiSelector().className("android.widget.EditText").instance(0)</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-20T19:50:43.528186" elapsed="1.751222"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Ive Found THe fuckin email Input</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2024-11-20T19:50:45.279408" elapsed="0.000999"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:50:45.280407" level="INFO">${el2} = android=new UiSelector().className("android.widget.EditText").instance(0)</msg>
+<var>${el2}</var>
+<arg>android=new UiSelector().className("android.widget.EditText").instance(0)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:50:45.280407" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:50:45.281410" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.EditText").instance(0)'.</msg>
+<arg>${el2}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:50:45.280407" elapsed="0.177531"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:50:45.459942" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.EditText").instance(0)'.</msg>
+<arg>${el2}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:50:45.457938" elapsed="0.221999"/>
+</kw>
+<kw name="Input Text" owner="AppiumLibrary">
+<msg time="2024-11-20T19:50:45.681937" level="INFO">Typing text 'Jeditale@hotmail.com' into text field 'android=new UiSelector().className("android.widget.EditText").instance(0)'</msg>
+<arg>${el2}</arg>
+<arg>Jeditale@hotmail.com</arg>
+<doc>Types the given `text` into text field identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:50:45.680939" elapsed="1.908852"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:50:47.590792" level="INFO">${el3} = android=new UiSelector().className("android.widget.EditText").instance(1)</msg>
+<var>${el3}</var>
+<arg>android=new UiSelector().className("android.widget.EditText").instance(1)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:50:47.590792" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:50:47.592793" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.EditText").instance(1)'.</msg>
+<arg>${el3}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:50:47.591791" elapsed="1.329788"/>
+</kw>
+<kw name="Input Text" owner="AppiumLibrary">
+<msg time="2024-11-20T19:50:48.922581" level="INFO">Typing text 'Az851422' into text field 'android=new UiSelector().className("android.widget.EditText").instance(1)'</msg>
+<arg>${el3}</arg>
+<arg>Az851422</arg>
+<doc>Types the given `text` into text field identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:50:48.921579" elapsed="0.189306"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:50:49.110885" level="INFO">${el4} = class=android.widget.Button</msg>
+<var>${el4}</var>
+<arg>class=android.widget.Button</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:50:49.110885" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:50:49.112884" level="INFO">Clicking element 'class=android.widget.Button'.</msg>
+<arg>${el4}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:50:49.111885" elapsed="0.918127"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Get Premium</arg>
+<arg>timeout=20</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-20T19:50:50.031011" elapsed="5.517923"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:50:55.549934" level="INFO">${el5} = android=new UiSelector().className("android.widget.Button").instance(0)</msg>
+<var>${el5}</var>
+<arg>android=new UiSelector().className("android.widget.Button").instance(0)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:50:55.549934" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:50:55.550933" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.Button").instance(0)'.</msg>
+<arg>${el5}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:50:55.549934" elapsed="0.171459"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Jay</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-20T19:50:55.721393" elapsed="1.089975"/>
+</kw>
+<kw name="Close Application" owner="AppiumLibrary" type="TEARDOWN">
+<doc>Closes the current application and also close webdriver session.</doc>
+<status status="PASS" start="2024-11-20T19:50:56.811368" elapsed="0.925559"/>
+</kw>
+<status status="PASS" start="2024-11-20T19:50:26.732584" elapsed="31.004343"/>
+</test>
+<status status="PASS" start="2024-11-20T19:50:26.447209" elapsed="31.291718"/>
+</suite>
+<suite id="s1-s1-s2" name="Set reminder" source="E:\Hackaton\Hackaton_PC\automated_tester\Set reminder.robot">
+<test id="s1-s1-s2-t1" name="Login" line="7">
+<kw name="Open Application" owner="AppiumLibrary">
+<arg>http://127.0.0.1:4723</arg>
+<arg>appium:platformName=android</arg>
+<arg>appium:automationName=uiautomator2</arg>
+<arg>appium:deviceName=emulator-5554</arg>
+<arg>appium:platformVersion=12</arg>
+<arg>appium:app=E:/Hackaton/Hackaton_PC/automated_tester/Apk/nirva.apk</arg>
+<arg>appium:newCommandTimeout=${3600}</arg>
+<arg>appium:connectHardwareKeyboard=${True}</arg>
+<doc>Opens a new application to given Appium server.
+Capabilities of appium server, Android and iOS,
+Please check https://appium.io/docs/en/2.1/cli/args/
+| *Option*            | *Man.* | *Description*     |
+| remote_url          | Yes    | Appium server url |
+| alias               | no     | alias             |
+| strict_ssl          | No     | allows you to send commands to an invalid certificate host like a self-signed one. |</doc>
+<status status="PASS" start="2024-11-20T19:50:57.893927" elapsed="15.358500"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Login</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-20T19:51:13.252427" elapsed="0.573225"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:51:13.826647" level="INFO">${el1} = accessibility_id=Login</msg>
+<var>${el1}</var>
+<arg>accessibility_id=Login</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:51:13.825652" elapsed="0.000995"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:13.828646" level="INFO">Clicking element 'accessibility_id=Login'.</msg>
+<arg>${el1}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:51:13.826647" elapsed="0.215516"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>android=new UiSelector().className("android.widget.EditText").instance(0)</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-20T19:51:14.042163" elapsed="1.712032"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Ive Found THe fuckin email Input</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2024-11-20T19:51:15.755202" elapsed="0.000000"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:51:15.755202" level="INFO">${el2} = android=new UiSelector().className("android.widget.EditText").instance(0)</msg>
+<var>${el2}</var>
+<arg>android=new UiSelector().className("android.widget.EditText").instance(0)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:51:15.755202" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:15.756195" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.EditText").instance(0)'.</msg>
+<arg>${el2}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:51:15.755202" elapsed="0.194332"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:15.951533" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.EditText").instance(0)'.</msg>
+<arg>${el2}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:51:15.949534" elapsed="0.195524"/>
+</kw>
+<kw name="Input Text" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:16.149050" level="INFO">Typing text 'Jeditale@hotmail.com' into text field 'android=new UiSelector().className("android.widget.EditText").instance(0)'</msg>
+<arg>${el2}</arg>
+<arg>Jeditale@hotmail.com</arg>
+<doc>Types the given `text` into text field identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:51:16.147052" elapsed="1.957626"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:51:18.105680" level="INFO">${el3} = android=new UiSelector().className("android.widget.EditText").instance(1)</msg>
+<var>${el3}</var>
+<arg>android=new UiSelector().className("android.widget.EditText").instance(1)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:51:18.105680" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:18.106679" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.EditText").instance(1)'.</msg>
+<arg>${el3}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:51:18.105680" elapsed="1.210687"/>
+</kw>
+<kw name="Input Text" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:19.318364" level="INFO">Typing text 'Az851422' into text field 'android=new UiSelector().className("android.widget.EditText").instance(1)'</msg>
+<arg>${el3}</arg>
+<arg>Az851422</arg>
+<doc>Types the given `text` into text field identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:51:19.316367" elapsed="0.123151"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:51:19.440517" level="INFO">${el4} = class=android.widget.Button</msg>
+<var>${el4}</var>
+<arg>class=android.widget.Button</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:51:19.440517" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:19.442517" level="INFO">Clicking element 'class=android.widget.Button'.</msg>
+<arg>${el4}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:51:19.440517" elapsed="0.888103"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Get Premium</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-20T19:51:20.329620" elapsed="5.107651"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:51:25.438269" level="INFO">${el5} = android=new UiSelector().className("android.widget.Button").instance(0)</msg>
+<var>${el5}</var>
+<arg>android=new UiSelector().className("android.widget.Button").instance(0)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:51:25.438269" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:25.441291" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.Button").instance(0)'.</msg>
+<arg>${el5}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-20T19:51:25.439284" elapsed="1.181874"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Jay</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-20T19:51:26.621158" elapsed="0.060280"/>
+</kw>
+<kw name="Close Application" owner="AppiumLibrary" type="TEARDOWN">
+<doc>Closes the current application and also close webdriver session.</doc>
+<status status="PASS" start="2024-11-20T19:51:26.681438" elapsed="0.924194"/>
+</kw>
+<status status="PASS" start="2024-11-20T19:50:57.892928" elapsed="29.713701"/>
+</test>
+<test id="s1-s1-s2-t2" name="Navigate to reminder page" line="29">
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-20T19:51:27.609628" level="INFO">${el6} = android=new UiSelector().className("android.view.View").instance(7)</msg>
+<var>${el6}</var>
+<arg>android=new UiSelector().className("android.view.View").instance(7)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-20T19:51:27.609628" elapsed="0.000998"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:27.612626" level="INFO">Clicking element 'android=new UiSelector().className("android.view.View").instance(7)'.</msg>
+<kw name="Capture Page Screenshot" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:27.612626" level="FAIL">No application is open</msg>
+<doc>Takes a screenshot of the current page and embeds it into the log.</doc>
+<status status="FAIL" start="2024-11-20T19:51:27.612626" elapsed="0.004000">No application is open</status>
+</kw>
+<msg time="2024-11-20T19:51:27.618628" level="WARN">Keyword 'Capture Page Screenshot' could not be run on failure: No application is open</msg>
+<msg time="2024-11-20T19:51:27.619629" level="FAIL">No application is open</msg>
+<arg>${el6}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="FAIL" start="2024-11-20T19:51:27.610626" elapsed="0.010000">No application is open</status>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Reminders</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.621627" elapsed="0.000000"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<var>${el7}</var>
+<arg>android=new UiSelector().className("android.widget.Button").instance(1)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.621627" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<arg>${el7}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.621627" elapsed="0.001000"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Set Reminder</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.622627" elapsed="0.000000"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<var>${el8}</var>
+<arg>android=new UiSelector().className("android.widget.EditText").instance(0)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.622627" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<arg>${el8}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.623626" elapsed="0.000000"/>
+</kw>
+<kw name="Input Text" owner="AppiumLibrary">
+<arg>${el8}</arg>
+<arg>Testreminder</arg>
+<doc>Types the given `text` into text field identified by `locator`.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.623626" elapsed="0.000000"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<var>${el11}</var>
+<arg>accessibility_id=Sun</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.623626" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<arg>${el11}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.624626" elapsed="0.000000"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<var>${el12}</var>
+<arg>accessibility_id=Mon</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.624626" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<arg>${el12}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.625627" elapsed="0.000000"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<var>${el13}</var>
+<arg>accessibility_id=Save Reminder</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.625627" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<arg>${el13}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.625627" elapsed="0.000000"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Reminders</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.626626" elapsed="0.000000"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<var>${el14}</var>
+<arg>//android.view.View[contains(@content-desc, 'Testreminder')]</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.626626" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<arg>${el14}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.626626" elapsed="0.000000"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Edit Reminder</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.627626" elapsed="0.000000"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<var>${el15}</var>
+<arg>accessibility_id=Delete Reminder</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.627626" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<arg>${el15}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.628626" elapsed="0.000000"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Reminders</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="NOT RUN" start="2024-11-20T19:51:27.628626" elapsed="0.000000"/>
+</kw>
+<kw name="Close Application" owner="AppiumLibrary" type="TEARDOWN">
+<kw name="Capture Page Screenshot" owner="AppiumLibrary">
+<msg time="2024-11-20T19:51:27.630639" level="FAIL">No application is open</msg>
+<doc>Takes a screenshot of the current page and embeds it into the log.</doc>
+<status status="FAIL" start="2024-11-20T19:51:27.630639" elapsed="0.002991">No application is open</status>
+</kw>
+<msg time="2024-11-20T19:51:27.634628" level="WARN">Keyword 'Capture Page Screenshot' could not be run on failure: No application is open</msg>
+<msg time="2024-11-20T19:51:27.636630" level="FAIL">No application is open</msg>
+<doc>Closes the current application and also close webdriver session.</doc>
+<status status="FAIL" start="2024-11-20T19:51:27.630639" elapsed="0.009005">No application is open</status>
+</kw>
+<status status="FAIL" start="2024-11-20T19:51:27.608630" elapsed="0.032011">No application is open
+
+Also teardown failed:
+No application is open</status>
+</test>
+<status status="FAIL" start="2024-11-20T19:50:57.739927" elapsed="29.905702"/>
+</suite>
+<status status="FAIL" start="2024-11-20T19:50:26.443624" elapsed="61.206007"/>
+</suite>
+<status status="FAIL" start="2024-11-20T19:50:26.399969" elapsed="61.258659"/>
+</suite>
+<statistics>
+<total>
+<stat pass="2" fail="1" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="2" fail="1" skip="0" id="s1" name="Hackaton PC">Hackaton PC</stat>
+<stat pass="2" fail="1" skip="0" id="s1-s1" name="Automated Tester">Hackaton PC.Automated Tester</stat>
+<stat pass="1" fail="0" skip="0" id="s1-s1-s1" name="Login">Hackaton PC.Automated Tester.Login</stat>
+<stat pass="1" fail="1" skip="0" id="s1-s1-s2" name="Set reminder">Hackaton PC.Automated Tester.Set reminder</stat>
+</suite>
+</statistics>
+<errors>
+<msg time="2024-11-20T19:51:27.618628" level="WARN">Keyword 'Capture Page Screenshot' could not be run on failure: No application is open</msg>
+<msg time="2024-11-20T19:51:27.634628" level="WARN">Keyword 'Capture Page Screenshot' could not be run on failure: No application is open</msg>
+</errors>
+</robot>
