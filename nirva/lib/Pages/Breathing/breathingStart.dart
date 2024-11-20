@@ -9,12 +9,14 @@ class BreathingstartScreen extends StatefulWidget {
   final int breatheInDuration;
   final int holdDuration;
   final int breatheOutDuration;
+  final String selectedVoice;
 
   BreathingstartScreen({
     required this.remainingCycles,
     required this.breatheInDuration,
     required this.holdDuration,
     required this.breatheOutDuration,
+    required this.selectedVoice,
   });
 
   @override
@@ -54,6 +56,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
     try {
       final ByteData data = await rootBundle.load(soundPath); // โหลดไฟล์เสียงจาก assets
       final Uint8List bytes = data.buffer.asUint8List(); // แปลงเป็น Uint8List
+      await _audioPlayer.setVolume(1.0); // ตั้งค่าเสียงดังสุด (ค่ารับได้ตั้งแต่ 0.0 ถึง 1.0)
       await _audioPlayer.play(BytesSource(bytes)); // เล่นเสียงจาก bytes
     } catch (e) {
       print('Error loading sound: $e'); // แสดงข้อความหากมีข้อผิดพลาด
@@ -70,9 +73,23 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
     });
      // เล่นเสียง Breathe In ทันทีหลังจาก Start
     await Future.delayed(Duration(seconds: 3)); // เพิ่ม delay เพื่อให้เสียงเล่นต่อเนื่อง
-    await _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Breathe In
+    await _playSound(_getBreathingSound('Breathein')); // เล่นเสียง Breathe In
   
     _startBreathingCycle();  // เริ่มรอบหายใจ
+  }
+
+  // ฟังก์ชันสำหรับเลือกเสียงที่เลือกจาก user
+  String _getBreathingSound(String action) {
+    if (widget.selectedVoice == 'Eric') {
+      // เสียงผู้ชาย (Eric)
+      return 'assets/sound/eric_$action.mp3';
+    } else if (widget.selectedVoice == 'Sarah') {
+      // เสียงผู้หญิง (Sarah)
+      return 'assets/sound/sarah_$action.mp3';
+    } else {
+      // ค่าเริ่มต้น
+      return 'assets/sound/eric_$action.mp3';
+    }
   }
 
   void _startBreathingCycle() {
@@ -83,17 +100,17 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
         int secondsInCycle = _elapsedSeconds % _cycleDuration;
 
         if (secondsInCycle == 0) {
-          _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Breathe In
+          _playSound(_getBreathingSound('Breathein')); // เล่นเสียง Breathe In
         }
 
         if (secondsInCycle < _breatheInDuration) {
           _breatheText = 'Breathe In';
         } else if (secondsInCycle == _breatheInDuration) {
-          _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Hold
+          _playSound(_getBreathingSound('Hold')); // เล่นเสียง Hold
         } else if (secondsInCycle < _breatheInDuration + _holdDuration) {
           _breatheText = 'Hold';
         } else if (secondsInCycle == _breatheInDuration + _holdDuration) {
-          _playSound('assets/sound/ringtone.mp3'); // เล่นเสียง Breathe Out
+          _playSound(_getBreathingSound('Breatheout')); // เล่นเสียง Breathe Out
         } else if (secondsInCycle < _breatheInDuration + _holdDuration + _breatheOutDuration) {
           _breatheText = 'Breathe Out';
         }
@@ -174,7 +191,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
                 ),
               ),
 
-              SizedBox(height: 50),
+              SizedBox(height: 90),
 
               // ปุ่ม PAUSE/RESUME
               Padding(
@@ -186,17 +203,17 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
                     backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     minimumSize: Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   child: Text(
                     _isPaused ? 'CONTINUE' : 'PAUSE',  // เปลี่ยนข้อความปุ่ม
                     style: TextStyle(
-                      fontSize: 25,
+                      fontSize: 30,
                       color: Colors.black, // สีข้อความของปุ่ม
                     ),
                   ),
@@ -207,7 +224,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
 
               // ปุ่ม Stop
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(horizontal: 170.0),
                 child: ElevatedButton(
                   onPressed: () {
                     _timer.cancel();
@@ -218,11 +235,11 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
                     ));
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
                     backgroundColor: Colors.black,
                     minimumSize: Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                   child: Text(

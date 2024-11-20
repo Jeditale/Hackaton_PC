@@ -29,6 +29,7 @@ class _MeditationstartScreenState extends State<MeditationstartScreen> {
   void initState() {
     super.initState();
     timeLeft = widget.selectedTime * 60;
+    _audioCache.loadAll(['sound/mountain.mp3', 'sound/soundlowfi.mp3']); // โหลดไฟล์เสียงล่วงหน้าทั้งหมด
     _startCountdown();
     _playSelectedMusic();
   }
@@ -39,13 +40,12 @@ class _MeditationstartScreenState extends State<MeditationstartScreen> {
     if (widget.selectedBreathingPattern == 'Mountain') {
       audioPath = 'sound/mountain.mp3';
     } else if (widget.selectedBreathingPattern == 'Low-fi Music') {
-      audioPath = 'sound/soundlowfi.mp3';
+      audioPath = 'sound/lowfi.mp3';
     } else {
       return;
     }
 
-    await _audioCache.load(audioPath); // โหลดไฟล์เสียงล่วงหน้า
-    _audioPlayer.play(AssetSource(audioPath), volume: 100.0);
+    _audioPlayer.play(AssetSource(audioPath), volume: 1.0);
     _audioPlayer.setReleaseMode(ReleaseMode.loop);
   }
 
@@ -134,45 +134,49 @@ class _MeditationstartScreenState extends State<MeditationstartScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 50),
+
                 ElevatedButton(
                   onPressed: _togglePause,
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.fromLTRB(10, 30, 10, 30),
                     backgroundColor: Colors.white,
                     minimumSize: Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   child: Text(
                     isPaused ? 'CONTINUE' : 'PAUSE',
-                    style: TextStyle(fontSize: 25, color: Colors.black),
+                    style: TextStyle(fontSize: 30, color: Colors.black),
                   ),
                 ),
                 SizedBox(height: 20),
                 
-                ElevatedButton(
-                  onPressed: () {
-                    _stopMusic();
-                    Navigator.push(
-                      
-                      context,
-                      MaterialPageRoute(builder: (context) => MeditationScreen()),
-                      
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15),
-                    backgroundColor: Colors.black,
-                    minimumSize: Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 170.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _stopMusic();
+                      _stopMusic();
+                      Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return MeditationScreen();
+                      },
+                    ));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      backgroundColor: Colors.black,
+                      minimumSize: Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    'Stop',
-                    style: TextStyle(fontSize: 25, color: Colors.white),
+                    child: Text(
+                      'Stop',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
                   ),
                 ),
               ],

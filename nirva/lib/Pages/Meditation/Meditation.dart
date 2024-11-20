@@ -11,7 +11,6 @@ class MeditationScreen extends StatefulWidget {
 
 class _BreathingScreenState extends State<MeditationScreen> {
   String selectedBreathingPattern = 'Background Music';
-  String selectedVoice = 'Voice';
   int selectedTime = 1; // เวลาเริ่มต้น
 
   Future<void> updateMedCount(String userId) async {
@@ -91,39 +90,31 @@ class _BreathingScreenState extends State<MeditationScreen> {
               SizedBox(height: 20),
               _buildMusicSelector(),
 
-              SizedBox(height: 10),
-              _buildVoiceSelector(),
-
               SizedBox(height: 20),
               
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ElevatedButton(
-                  onPressed: () async {
-                    final user =FirebaseAuth.instance.currentUser;
-
-                    if (user != null){
-                      await updateMedCount(user.uid);
-                    } else {
-                      print('User not logged in');
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MeditationstartScreen(
-                          selectedTime: selectedTime,
-                          selectedBreathingPattern: selectedBreathingPattern,
-                        ),
-                      ),
-                    );
-                  },
+                  onPressed: (selectedBreathingPattern != 'Background Music') 
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return MeditationstartScreen(
+                                  selectedTime: selectedTime,
+                                  selectedBreathingPattern: selectedBreathingPattern,
+                                );
+                              },
+                            ),
+                          );
+                        }
+                      : null, 
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.fromLTRB(10, 25, 10, 25),
                     backgroundColor: Colors.black,
                     minimumSize: Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   ),
                   child: Text(
                     'Start',
@@ -162,7 +153,7 @@ class _BreathingScreenState extends State<MeditationScreen> {
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
                 color: Colors.black12,
@@ -174,50 +165,6 @@ class _BreathingScreenState extends State<MeditationScreen> {
           child: Center(
             child: Text(
               selectedBreathingPattern,
-              style: TextStyle(fontSize: 25),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildVoiceSelector() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: PopupMenuButton<String>(
-        onSelected: (value) {
-          setState(() {
-            selectedVoice = value;
-          });
-        },
-        itemBuilder: (BuildContext context) => [
-          PopupMenuItem(
-            value: 'Eric',
-            child: Text('Eric', style: TextStyle(fontSize: 25)),
-          ),
-          PopupMenuItem(
-            value: 'Sarah',
-            child: Text('Sarah', style: TextStyle(fontSize: 25)),
-          ),
-        ],
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 30),
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 4,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Center(
-            child: Text(
-              selectedVoice,
               style: TextStyle(fontSize: 25),
             ),
           ),

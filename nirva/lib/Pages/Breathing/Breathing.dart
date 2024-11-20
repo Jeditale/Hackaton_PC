@@ -31,7 +31,6 @@ class _BreathingScreenState extends State<BreathingScreen> {
         cycleCount = 3;
         _remainingCycles = 3;
         _breatheInDuration = 2;
-        _holdDuration = 0;
         _breatheOutDuration = 2;
         break;
       case 'Triangle Breath':
@@ -45,7 +44,6 @@ class _BreathingScreenState extends State<BreathingScreen> {
         cycleCount = 10;
         _remainingCycles = 10;
         _breatheInDuration = 5;
-        _holdDuration = 0;
         _breatheOutDuration = 5;
         break;
       case 'Box Breath':
@@ -145,7 +143,7 @@ class _BreathingScreenState extends State<BreathingScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
 
               // Breathing Pattern button
               Padding(
@@ -184,7 +182,7 @@ class _BreathingScreenState extends State<BreathingScreen> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black12,
@@ -229,7 +227,7 @@ class _BreathingScreenState extends State<BreathingScreen> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black12,
@@ -248,65 +246,36 @@ class _BreathingScreenState extends State<BreathingScreen> {
                 ),
               ),
 
-              SizedBox(height: 10),
-
-              // Vibration toggle
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  children: [
-                    Checkbox(
-                      value: false,
-                      onChanged: (bool? value) {},
-                    ),
-                    Text('Vibration', style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-              ),
-
               SizedBox(height: 20),
 
               // Start button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ElevatedButton(
-                  onPressed: () async {
-                    final user = FirebaseAuth.instance.currentUser;
-                    if (selectedBreathingPattern == 'Breathing Pattern') {
-                      // ถ้ายังไม่ได้เลือก Breathing Pattern จะแสดง SnackBar
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Please select a Breathing Pattern before starting'),
-                        ),
-                      );
-                    } else {
-                      if (user != null) {
-                      await updateBreathCount(user.uid);
-                    }
-                      // ถ้าเลือกแล้วก็ไปที่หน้า BreathingstartScreen
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return BreathingstartScreen(
-                            remainingCycles: _remainingCycles,
-                            breatheInDuration: _breatheInDuration,
-                            holdDuration: _holdDuration,
-                            breatheOutDuration: _breatheOutDuration,
-                          );
-                        },
-                      ));
-                    }
-                  },
+                  onPressed: (selectedBreathingPattern != 'Breathing Pattern' &&
+                              selectedVoice != 'Voice')
+                      ? () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return BreathingstartScreen(
+                                remainingCycles: _remainingCycles,
+                                breatheInDuration: _breatheInDuration,
+                                holdDuration: _holdDuration,
+                                breatheOutDuration: _breatheOutDuration,
+                                selectedVoice: selectedVoice, // ส่งเสียงที่เลือกไป
+                              );
+                            },
+                          ));
+                        }
+                      : null, // ปิดการใช้งานปุ่มถ้ายังไม่ได้เลือก
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.fromLTRB(10, 25, 10, 25),
                     backgroundColor: Colors.black,
                     minimumSize: Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   ),
-                  child: Text(
-                    'Start',
-                    style: TextStyle(fontSize: 25, color: Colors.white),
+                  child: Text('Start', 
+                    style: TextStyle(fontSize: 25, color: Colors.white)
                   ),
                 ),
               ),
