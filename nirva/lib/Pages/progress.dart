@@ -135,7 +135,7 @@ class _ProgressPageState extends State<ProgressPage> {
                           SizedBox(height: 10),
                           SizedBox(
                             height: 300,
-                            child: MyBarTotal(), // Display the Pie Chart here
+                            child: MyBarTotal(),
                           ),
                         ],
                       ),

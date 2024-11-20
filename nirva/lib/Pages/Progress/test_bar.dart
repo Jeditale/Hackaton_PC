@@ -120,17 +120,30 @@ class MyBarChart extends StatelessWidget {
         maxY: 25,
         minY: 0,
         gridData: FlGridData(show: false),
-        // borderData: FlBorderData(show: false),
+        borderData: FlBorderData(
+          show: true,
+          border: Border(
+            left: BorderSide(color: Colors.grey, width: 1), // Show the Y-axis border
+            bottom: BorderSide(color: Colors.grey, width: 1), // Show the X-axis border
+            top: BorderSide.none, // Hide the top border
+            right: BorderSide(color: const Color.fromARGB(255, 0, 0, 0), width: 1), // Hide the right border
+          ),
+        ),
         titlesData: FlTitlesData(
           show: true,
           topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: false,
+              )
+            ),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
               getTitlesWidget: getButtomTitles,
-              reservedSize: 40, // Add space for the titles
-              ),
+              reservedSize: 35,
             ),
+          ),
         ),
         barGroups: myBar.barData
           .map(
