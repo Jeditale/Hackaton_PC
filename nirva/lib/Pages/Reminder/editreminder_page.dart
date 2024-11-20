@@ -241,7 +241,7 @@ class _EditReminderPageState extends State<EditReminderPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(5),
               child: SizedBox(
                 width: 360,
                 height: 73,
@@ -255,11 +255,28 @@ class _EditReminderPageState extends State<EditReminderPage> {
                 ),
               ),
             ),
-            TextButton(
-              onPressed: _deleteReminder,
-              style: TextButton.styleFrom(backgroundColor: Colors.red),
-              child: Text('Delete Reminder'),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: SizedBox(
+                width: 360,
+                height: 73,
+                child: ElevatedButton(
+                  onPressed: _deleteReminder,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text('Delete Reminder'),
+                ),
+              ),
             ),
+            // TextButton(
+            //   onPressed: _deleteReminder,
+            //   style: TextButton.styleFrom(
+            //     backgroundColor: Colors.red,
+            //     foregroundColor: Colors.white),
+            //   child: Text('Delete Reminder'),
+            // ),
           ],
         ),
       ),

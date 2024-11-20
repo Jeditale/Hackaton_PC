@@ -224,7 +224,7 @@ class _BreathingstartScreenState extends State<BreathingstartScreen> {
 
               // ปุ่ม Stop
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 170.0),
+                padding: const EdgeInsets.symmetric(horizontal: 100.0),
                 child: ElevatedButton(
                   onPressed: () {
                     _timer.cancel();
