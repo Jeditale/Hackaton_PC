@@ -154,7 +154,7 @@ class _MeditationstartScreenState extends State<MeditationstartScreen> {
                 SizedBox(height: 20),
                 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 170.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 100.0),
                   child: ElevatedButton(
                     onPressed: () {
                       _stopMusic();
