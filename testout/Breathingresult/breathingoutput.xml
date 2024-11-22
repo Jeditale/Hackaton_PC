@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.1 (Python 3.12.7 on win32)" generated="2024-11-22T09:25:41.585818" rpa="false" schemaversion="5">
+<suite id="s1" name="Breathing" source="E:\Hackaton\Hackaton_PC\automated_tester\breathing.robot">
+<test id="s1-t1" name="Loginandbreathing" line="7">
+<kw name="Open Application" owner="AppiumLibrary">
+<arg>http://127.0.0.1:4723</arg>
+<arg>appium:platformName=android</arg>
+<arg>appium:automationName=uiautomator2</arg>
+<arg>appium:deviceName=emulator-5554</arg>
+<arg>appium:platformVersion=12</arg>
+<arg>appium:app=E:/Hackaton/Hackaton_PC/automated_tester/Apk/nirva.apk</arg>
+<arg>appium:newCommandTimeout=${3600}</arg>
+<arg>appium:connectHardwareKeyboard=${True}</arg>
+<doc>Opens a new application to given Appium server.
+Capabilities of appium server, Android and iOS,
+Please check https://appium.io/docs/en/2.1/cli/args/
+| *Option*            | *Man.* | *Description*     |
+| remote_url          | Yes    | Appium server url |
+| alias               | no     | alias             |
+| strict_ssl          | No     | allows you to send commands to an invalid certificate host like a self-signed one. |</doc>
+<status status="PASS" start="2024-11-22T09:25:41.933926" elapsed="19.712217"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Login</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:01.647144" elapsed="1.352174"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:03.000318" level="INFO">${el1} = accessibility_id=Login</msg>
+<var>${el1}</var>
+<arg>accessibility_id=Login</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:03.000318" elapsed="0.001000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:03.003324" level="INFO">Clicking element 'accessibility_id=Login'.</msg>
+<arg>${el1}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:03.001318" elapsed="2.349201"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>android=new UiSelector().className("android.widget.EditText").instance(0)</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:05.353511" elapsed="3.055337"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:08.409845" level="INFO">${el2} = android=new UiSelector().className("android.widget.EditText").instance(0)</msg>
+<var>${el2}</var>
+<arg>android=new UiSelector().className("android.widget.EditText").instance(0)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:08.409845" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:08.411852" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.EditText").instance(0)'.</msg>
+<arg>${el2}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:08.409845" elapsed="0.416006"/>
+</kw>
+<kw name="Input Text" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:08.828845" level="INFO">Typing text 'Jeditale@hotmail.com' into text field 'android=new UiSelector().className("android.widget.EditText").instance(0)'</msg>
+<arg>${el2}</arg>
+<arg>Jeditale@hotmail.com</arg>
+<doc>Types the given `text` into text field identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:08.826850" elapsed="0.302995"/>
+</kw>
+<kw name="Input Text" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:09.131852" level="INFO">Typing text 'Jeditale@hotmail.com' into text field 'android=new UiSelector().className("android.widget.EditText").instance(0)'</msg>
+<arg>${el2}</arg>
+<arg>Jeditale@hotmail.com</arg>
+<doc>Types the given `text` into text field identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:09.129845" elapsed="0.330002"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:09.460855" level="INFO">${el3} = android=new UiSelector().className("android.widget.EditText").instance(1)</msg>
+<var>${el3}</var>
+<arg>android=new UiSelector().className("android.widget.EditText").instance(1)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:09.460855" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:09.464848" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.EditText").instance(1)'.</msg>
+<arg>${el3}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:09.462845" elapsed="2.766056"/>
+</kw>
+<kw name="Input Text" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:12.229899" level="INFO">Typing text 'Az851422' into text field 'android=new UiSelector().className("android.widget.EditText").instance(1)'</msg>
+<arg>${el3}</arg>
+<arg>Az851422</arg>
+<doc>Types the given `text` into text field identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:12.228901" elapsed="0.151850"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:12.381750" level="INFO">${el4} = class=android.widget.Button</msg>
+<var>${el4}</var>
+<arg>class=android.widget.Button</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:12.380751" elapsed="0.000999"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:12.383751" level="INFO">Clicking element 'class=android.widget.Button'.</msg>
+<arg>${el4}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:12.382750" elapsed="0.882521"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Get Premium</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:13.266272" elapsed="4.880979"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:18.148247" level="INFO">${el5} = android=new UiSelector().className("android.widget.Button").instance(0)</msg>
+<var>${el5}</var>
+<arg>android=new UiSelector().className("android.widget.Button").instance(0)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:18.148247" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:18.149246" level="INFO">Clicking element 'android=new UiSelector().className("android.widget.Button").instance(0)'.</msg>
+<arg>${el5}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:18.148247" elapsed="0.201182"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Jay</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:18.350444" elapsed="1.000725"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:19.352165" level="INFO">${el6} = android=new UiSelector().className("android.view.View").instance(8)</msg>
+<var>${el6}</var>
+<arg>android=new UiSelector().className("android.view.View").instance(8)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:19.352165" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:19.353163" level="INFO">Clicking element 'android=new UiSelector().className("android.view.View").instance(8)'.</msg>
+<arg>${el6}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:19.352165" elapsed="0.162896"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Breathing Exercises</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:19.515061" elapsed="1.007771"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:20.523833" level="INFO">${el7} = android=new UiSelector().description("Start").instance(0)</msg>
+<var>${el7}</var>
+<arg>android=new UiSelector().description("Start").instance(0)</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:20.523833" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:20.525832" level="INFO">Clicking element 'android=new UiSelector().description("Start").instance(0)'.</msg>
+<arg>${el7}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:20.524832" elapsed="0.209830"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Breathing Pattern</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:20.734662" elapsed="0.869213"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:21.604874" level="INFO">${el8} = accessibility_id=Breathing Pattern</msg>
+<var>${el8}</var>
+<arg>accessibility_id=Breathing Pattern</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:21.604874" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:21.607875" level="INFO">Clicking element 'accessibility_id=Breathing Pattern'.</msg>
+<arg>${el8}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:21.604874" elapsed="0.186002"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Sleep Calm Breath</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:21.790876" elapsed="0.866006"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:22.657879" level="INFO">${el9} = accessibility_id=Sleep Calm Breath</msg>
+<var>${el9}</var>
+<arg>accessibility_id=Sleep Calm Breath</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:22.657879" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:22.659887" level="INFO">Clicking element 'accessibility_id=Sleep Calm Breath'.</msg>
+<arg>${el9}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:22.657879" elapsed="1.083524"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:23.743407" level="INFO">${el10} = accessibility_id=Voice</msg>
+<var>${el10}</var>
+<arg>accessibility_id=Voice</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:23.742406" elapsed="0.001001"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:23.745410" level="INFO">Clicking element 'accessibility_id=Voice'.</msg>
+<arg>${el10}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:23.743407" elapsed="0.902545"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=Eric</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:24.647953" elapsed="0.105995"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:24.754948" level="INFO">${el11} = accessibility_id=Eric</msg>
+<var>${el11}</var>
+<arg>accessibility_id=Eric</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:24.754948" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:24.757947" level="INFO">Clicking element 'accessibility_id=Eric'.</msg>
+<arg>${el11}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:24.755947" elapsed="0.192063"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:24.949007" level="INFO">${el12} = accessibility_id=Start</msg>
+<var>${el12}</var>
+<arg>accessibility_id=Start</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:24.949007" elapsed="0.000000"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:24.951006" level="INFO">Clicking element 'accessibility_id=Start'.</msg>
+<arg>${el12}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:24.949007" elapsed="1.061006"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=PAUSE</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:26.013002" elapsed="2.682466"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:28.696467" level="INFO">${el13} = accessibility_id=PAUSE</msg>
+<var>${el13}</var>
+<arg>accessibility_id=PAUSE</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:28.695468" elapsed="0.000999"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:28.699467" level="INFO">Clicking element 'accessibility_id=PAUSE'.</msg>
+<arg>${el13}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:28.696467" elapsed="0.279520"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=CONTINUE</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:28.975987" elapsed="0.659997"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2024-11-22T09:26:29.636986" level="INFO">${el14} = accessibility_id=STOP</msg>
+<var>${el14}</var>
+<arg>accessibility_id=STOP</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2024-11-22T09:26:29.635984" elapsed="0.001002"/>
+</kw>
+<kw name="Click Element" owner="AppiumLibrary">
+<msg time="2024-11-22T09:26:29.638988" level="INFO">Clicking element 'accessibility_id=STOP'.</msg>
+<arg>${el14}</arg>
+<doc>Click element identified by `locator`.</doc>
+<status status="PASS" start="2024-11-22T09:26:29.636986" elapsed="0.730000"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="AppiumLibrary">
+<arg>accessibility_id=CONTINUE</arg>
+<arg>timeout=10</arg>
+<doc>Waits until element specified with `locator` appears on current page.</doc>
+<status status="PASS" start="2024-11-22T09:26:30.366986" elapsed="0.078001"/>
+</kw>
+<kw name="Close Application" owner="AppiumLibrary" type="TEARDOWN">
+<doc>Closes the current application and also close webdriver session.</doc>
+<status status="PASS" start="2024-11-22T09:26:30.446985" elapsed="0.869000"/>
+</kw>
+<status status="PASS" start="2024-11-22T09:25:41.931914" elapsed="49.384071"/>
+</test>
+<status status="PASS" start="2024-11-22T09:25:41.588816" elapsed="49.729170"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="1" fail="0" skip="0" id="s1" name="Breathing">Breathing</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

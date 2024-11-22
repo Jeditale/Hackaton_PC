@@ -13,7 +13,7 @@ Loginandmeditate
     ${el2} =    Set Variable     android=new UiSelector().className("android.widget.EditText").instance(0)
     Click Element    ${el2}
      Input Text    ${el2}    Jeditale@hotmail.com
-    
+     Input Text    ${el2}    Jeditale@hotmail.com
     
     ${el3} =    Set Variable     android=new UiSelector().className("android.widget.EditText").instance(1)
     Click Element    ${el3}

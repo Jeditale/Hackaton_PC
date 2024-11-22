@@ -25,11 +25,24 @@ dependencies:
   video_player: ^2.9.2
   audioplayers: ^6.1.0
   firebase_auth: ^5.3.3
+  cli_completion: ^0.5.1
+  dwds: ^24.1.0
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  patrol: ^3.12.0
+
+patrol:
+  app_name: nirva
+  android:
+    package_name: com.example.nirva
+  ios:
+    bundle_id: com.example.nirva
+  macos:
+    bundle_id: com.example.macos.nirva
 
 flutter:
   uses-material-design: true
@@ -39,3 +52,4 @@ flutter:
     - assets/notification/
     - assets/video/
     - assets/sound/
+

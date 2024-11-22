@@ -22,6 +22,7 @@ LoginandShop
     ${el3} =    Set Variable     android=new UiSelector().className("android.widget.EditText").instance(1)
     Click Element    ${el3}
     Input Text    ${el3}    Az851422
+    Input Text    ${el3}    Az851422
     ${el4} =    Set Variable     class=android.widget.Button
     Click Element    ${el4}
     Wait Until Page Contains Element    accessibility_id=Get Premium    timeout=20
